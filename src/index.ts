@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import Config from './lib/config';
+import ParseFile from './lib/parse_file';
 
 
 interface ProcessFunction {
@@ -65,6 +66,8 @@ class CMD {
 
   startParseFile (config: Config):void {
     console.log(config)
+    let newParse = new ParseFile(config);
+    newParse.parseAllFile();
   }
 }
 

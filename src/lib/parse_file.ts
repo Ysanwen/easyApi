@@ -1,6 +1,7 @@
-// import * as path from "path";
+import * as path from "path";
 import * as fs from "fs-extra";
 import * as readline from "readline";
+import Config from './config';
 
 
 
@@ -12,18 +13,44 @@ import * as readline from "readline";
 
 class ParseFile {
 
-  inputFile: string;
+  inputFiles: string[];
   outputPath: string;
 
-  constructor (inputFile: string, outputPath: string) {
-    this.inputFile = inputFile;
-    this.outputPath = outputPath || process.cwd();
-    this.readFile();
+  constructor (config: Config) {
+    let _inputPath = config._inputPath;
+    let fileArray:string[] = [];
+    for (let pathStr of _inputPath) {
+      fileArray = fileArray.concat(this.parsePath(pathStr));
+    }
+    this.inputFiles = fileArray;
+    this.outputPath = config.outputPath || path.resolve(process.cwd(), './api_doc');
   }
 
-  readFile(): void {
+  parsePath (pathStr: string): string[] {
+    let fileArray:string[] = [];
+    let status = fs.lstatSync(pathStr);
+    if (status.isDirectory()) {
+      let pathList = fs.readdirSync(pathStr);
+      pathList = pathList.map((subPath) => {
+        let newPath = path.resolve(pathStr, subPath);
+        fileArray = fileArray.concat(this.parsePath(newPath))
+        return newPath;
+      })
+    } else if (status.isFile()) {
+      fileArray.push(pathStr);
+    }
+    return fileArray; 
+  }
+
+  parseAllFile (): void {
+    for (let file of this.inputFiles) {
+      this.readFile(file);
+    }
+  }
+
+  readFile(file: string):void {
     const rl = readline.createInterface({
-      input: fs.createReadStream(this.inputFile),
+      input: fs.createReadStream(file),
       crlfDelay: Infinity
     });
     

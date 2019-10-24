@@ -13,6 +13,7 @@ class Config {
   title = 'easy api doc';
   input: string;
   outputPath = './api_doc';
+  _inputPath: string[];
   [key: string]: any;
 
   parseConfigJson (configPath: string, callback:CallbackFunction): void {
