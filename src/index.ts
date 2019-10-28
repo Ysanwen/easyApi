@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import Config from './lib/config';
+import { ConfigObject, generateConfigJson } from './lib/generate_config';
 import ParseFile from './lib/parse_file';
 
 
@@ -17,7 +17,7 @@ interface Options {
 const version = '0.0.1';
 const options: Options[] = [
   { flag: '-i, --input <file>', description: 'input file or directory, default will walk through current working directory' },
-  { flag: '-o, --outputPath <path>', description: 'output file directory, default will create a "easyApi" folder in current working directory' },
+  { flag: '-o, --output <path>', description: 'output file directory, default will create a "easyApi" folder in current working directory' },
   { flag: '-c, --config <file>', description: 'the config.json file' }
 ]
 
@@ -35,36 +35,17 @@ class CMD {
 
   startCmd(): void {
     this.commander.parse(process.argv);
-    let config = new Config();
-    if (this.commander.input) {
-      config.updateConfig('input', this.commander.input);
-    }
-    if (this.commander.outputPath) {
-      config.updateConfig('outputPath', this.commander.outputPath);
-    }
-    if (this.commander.config) {
-      config.parseConfigJson(this.commander.config, (err, config) => {
-        if (err) {
-          console.log(err.message);
-          process.exit(1);
-        } else {
-          if (config.checkInput()) {
-            this.startParseFile(config);
-          } else {
-            process.exit(1);
-          }
-        }
-      })
-    } else {
-      if (config.checkInput()) {
-        this.startParseFile(config);
-      } else {
+    generateConfigJson(this.commander, (err, config: ConfigObject) => {
+      if (err) {
+        console.log(err.message);
         process.exit(1);
+      } else {
+        this.startParseFile(config)
       }
-    }
+    })
   }
 
-  startParseFile (config: Config):void {
+  startParseFile (config: ConfigObject):void {
     let newParse = new ParseFile(config);
     newParse.parseAllFile();
   }

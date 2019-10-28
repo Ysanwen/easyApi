@@ -1,15 +1,16 @@
 import * as path from "path";
 import * as fs from "fs-extra";
 import ExtractBlock from "./parse_tool/extract_block";
-import Config from './config';
+import { ConfigObject } from './generate_config';
 
 class ParseFile {
 
   inputFiles: string[];
   outputPath: string;
 
-  constructor (config: Config) {
-    let _inputPath = config._inputPath;
+  constructor (config: ConfigObject) {
+    console.log(config)
+    let _inputPath = config._inputPath || [];
     let fileArray:string[] = [];
     for (let pathStr of _inputPath) {
       fileArray = fileArray.concat(this.parsePath(pathStr));
@@ -35,7 +36,6 @@ class ParseFile {
   }
 
   parseAllFile (): void {
-    console.log(this.inputFiles)
     for (let file of this.inputFiles) {
       let extract_block = new ExtractBlock(file);
       extract_block.doExtract()
