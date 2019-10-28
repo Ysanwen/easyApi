@@ -18,7 +18,7 @@ const version = '0.0.1';
 const options: Options[] = [
   { flag: '-i, --input <file>', description: 'input file or directory, default will walk through current working directory' },
   { flag: '-o, --outputPath <path>', description: 'output file directory, default will create a "easyApi" folder in current working directory' },
-  { flag: '-c, --config <file>', description: 'the config.json file' },
+  { flag: '-c, --config <file>', description: 'the config.json file' }
 ]
 
 
@@ -49,7 +49,7 @@ class CMD {
           process.exit(1);
         } else {
           if (config.checkInput()) {
-            this.startParseFile(config)
+            this.startParseFile(config);
           } else {
             process.exit(1);
           }
@@ -57,7 +57,7 @@ class CMD {
       })
     } else {
       if (config.checkInput()) {
-        this.startParseFile(config)
+        this.startParseFile(config);
       } else {
         process.exit(1);
       }
@@ -65,11 +65,10 @@ class CMD {
   }
 
   startParseFile (config: Config):void {
-    console.log(config)
     let newParse = new ParseFile(config);
     newParse.parseAllFile();
   }
 }
 
-let cmd = new CMD(options)
-cmd.startCmd()
+let cmd = new CMD(options);
+cmd.startCmd();

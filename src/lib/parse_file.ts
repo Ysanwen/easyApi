@@ -1,15 +1,7 @@
 import * as path from "path";
 import * as fs from "fs-extra";
-import * as readline from "readline";
+import ExtractBlock from "./parse_tool/extract_block";
 import Config from './config';
-
-
-
-// function outputPath () : void {
-//   console.log(process.cwd())
-//   console.log(__dirname)
-//   console.log(path.resolve(__dirname, '../'))
-// }
 
 class ParseFile {
 
@@ -43,24 +35,11 @@ class ParseFile {
   }
 
   parseAllFile (): void {
+    console.log(this.inputFiles)
     for (let file of this.inputFiles) {
-      this.readFile(file);
+      let extract_block = new ExtractBlock(file);
+      extract_block.doExtract()
     }
-  }
-
-  readFile(file: string):void {
-    const rl = readline.createInterface({
-      input: fs.createReadStream(file),
-      crlfDelay: Infinity
-    });
-    
-    rl.on('line', (line) => {
-      this.parseLine(line);
-    });
-  }
-
-  parseLine(line: string): void {
-    console.log(line);
   }
 }
 

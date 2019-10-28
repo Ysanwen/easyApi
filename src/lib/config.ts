@@ -38,9 +38,6 @@ class Config {
   }
 
   updateConfig (key: string, value: string): void {
-    // if (key === 'input' || key === 'outputPath') {
-    //   value = path.resolve(process.cwd(), value);
-    // }
     this[key] = value;
   }
 
