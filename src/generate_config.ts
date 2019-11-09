@@ -21,8 +21,8 @@ export interface ConfigObject {
   title: string;
   input: string;
   output: string;
-  config: string;
   baseUrl: string;
+  config: string;
   [key: string]: any;
 }
 
@@ -32,7 +32,7 @@ const config: ConfigObject = {
   input: '',
   output: './api_doc',
   baseUrl: '',
-  config: './easy.config.json',
+  config: './easy.config.json'
 }
 
 function checkInput (): boolean {
@@ -68,11 +68,7 @@ export function generateConfigJson (cmdObject: Command, callback: CallbackFuncti
           err = new Error(`some error with config file: ${cfgPath} ${error.message}`);
         } else {
           for (let key in configJson) {
-            if (key === 'version') {
-              config[key] = configJson[key];
-            } else {
-              configJson[key] && (config[key] = config[key] || configJson[key]);
-            }
+            key === 'version' ? config[key] = configJson[key] : configJson[key] && (config[key] = config[key] || configJson[key]);
           }
           if (!checkInput()) {
             err = new Error(`input file  error: ${config.input}`);

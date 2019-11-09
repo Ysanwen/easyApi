@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { ConfigObject, generateConfigJson } from './lib/generate_config';
-import ParseFile from './lib/parse_file';
+import { ConfigObject, generateConfigJson } from './generate_config';
+import ParseFile from './parse_file';
 
 
 interface ProcessFunction {

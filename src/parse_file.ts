@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs-extra";
-import ExtractBlock from "./parse_tool/extract_block";
+import ExtractBlock from "./lib/extract_block";
 import { ConfigObject } from './generate_config';
 
 class ParseFile {

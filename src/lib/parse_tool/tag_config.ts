@@ -1,4 +1,0 @@
-/**
- * @file easyApi tag config
- */
-

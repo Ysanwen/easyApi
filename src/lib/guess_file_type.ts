@@ -1,7 +1,7 @@
 /**
  * @file guess file type default type js javascript file
  */
-import regexConfig from './regex_config'; 
+import regexConfig from '../regex_config'; 
 
 function getSuffix (filename: string): string {
   let testMatch =  filename.match(/\.[a-zA-Z]/);

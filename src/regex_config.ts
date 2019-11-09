@@ -2,6 +2,12 @@
  * @file config annotation prefix and suffix of defferent file type
  */
 
+
+/**
+ * prefixRegex： the regexp match the annotation line begin  
+ * suffixRegex: the regexp match the annotation line end
+ * fileSuffix: the file suffix
+ */
 interface LanguageConfig {
   prefixRegex: RegExp;
   suffixRegex: RegExp;
