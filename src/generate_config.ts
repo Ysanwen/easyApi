@@ -10,11 +10,11 @@ interface CallbackFunction {
 }
 
 /**
- * version: api version
- * title: api doc title
- * input: the input source file or directory
- * output: the ouptut document directory
- * config: the config json file path
+ * version: api version  
+ * title: api doc title  
+ * input: the input source file or directory  
+ * output: the ouptut document directory  
+ * config: the config json file path  
  */
 export interface ConfigObject {
   version: string;
@@ -35,6 +35,7 @@ const config: ConfigObject = {
   config: './easy.config.json'
 }
 
+// check the input file is available
 function checkInput (): boolean {
   if (!config.input) {
     console.log('the input file path must be specified')
@@ -55,6 +56,14 @@ function checkInput (): boolean {
   }
 }
 
+/**
+ * read the config file from the cmd -c command if the specified file is exist  
+ * else try read the default config file "easy.config.json"
+ * 
+ * if the config read from config.json has the same keys in cmd  
+ * then the cmd value will be used instead
+ * 
+*/
 export function generateConfigJson (cmdObject: Command, callback: CallbackFunction): void {
   for (let key in config) {
     key !== 'version' && cmdObject[key] && (config[key] = cmdObject[key])

@@ -5,6 +5,8 @@ import * as fs from "fs-extra";
 import * as readline from "readline";
 import guessFileType from './guess_file_type';
 import * as handleTags from './handle_tags';
+import TagInfo from './parse_tool/tag_info';
+import { getBlockInfo } from './block_info';
 
 interface LineInfo {
   content: string;
@@ -26,7 +28,7 @@ class ExtractBlock {
     this.fileType = guessFileType(inputFile);
   }
 
-  doExtract(): void {
+  doExtract(callback: Function): void {
     const rl = readline.createInterface({
       input: fs.createReadStream(this.inputFile),
       crlfDelay: Infinity
@@ -36,6 +38,10 @@ class ExtractBlock {
       this.lineNumber += 1;
       this.getLine(line);
     });
+
+    rl.on('close', () => {
+      callback()
+    })
   }
 
   getLine(line: string): void {
@@ -59,23 +65,31 @@ class ExtractBlock {
   }
 
   parseBlock (): void {
-    let blockObject: any = {};
-    let currentKey = '';
+    let infoArray: TagInfo[] = [];
+    let currentTagInfo: TagInfo = null;
     for (let lineInfo of this.cacheLine) {
       let parseInfo = handleTags.parseLine(lineInfo.content);
       if (parseInfo.err) {
         console.log(`${parseInfo.err.message} at line number ${lineInfo.lineNumber} of ${this.inputFile}`);
-        currentKey = '';
+        currentTagInfo = null;
       } else {
-        if (parseInfo.key) {
-          currentKey = parseInfo.key;
-          blockObject[currentKey] = parseInfo.content;
+        if (parseInfo.tagInfo) {
+          if (parseInfo.tagInfo.error) {
+            let errMsg = parseInfo.tagInfo.error.message;
+            console.log(`${errMsg} at line number ${lineInfo.lineNumber} of ${this.inputFile}`);
+            currentTagInfo = null;
+          } else {
+            infoArray.push(parseInfo.tagInfo);
+            currentTagInfo = parseInfo.tagInfo;
+          }
         } else {
-          currentKey && (blockObject[currentKey] += '\r\n' + parseInfo.content);
+          let content = '\r\n' + parseInfo.content;
+          currentTagInfo && currentTagInfo.appendDescription && currentTagInfo.appendDescription(content);
         }
       }
     }
-    console.log(blockObject)
+    // todo
+    getBlockInfo(infoArray);
   }
 }
 

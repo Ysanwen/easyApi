@@ -2,26 +2,8 @@
  * @file deal with api doc tag
  */
 import regexConfig from '../regex_config';
-
-enum EffectiveTags {
-  ApiStart,
-  Version,
-  Description,
-  Deprecated,
-  Api,
-  Name,
-  Group,
-  HeaderParam,
-  Param,
-  QueryParam,
-  BodyParam,
-  ContentType,
-  SuccessResponse,
-  ErrorResponse,
-  Reuse,
-  Define,
-  ApiEnd
-}
+import * as EffectiveTags from './parse_tool/tag_info';
+import TagInfo from './parse_tool/tag_info';
 
 /**
  * the apiDoc tag prefix:
@@ -30,6 +12,7 @@ enum EffectiveTags {
 let symbol: string = '@';
 let matchTag: RegExp = new RegExp(`^${symbol}[A-Z]\\S+\\s+`);
 
+let effectiveKeys =  Object.keys(EffectiveTags);
 
 /**
  * replace white space
@@ -46,23 +29,26 @@ export function trimLine (line: string, fileType: string): string {
 /**
  * @return {err: Error | null, key:string, content:string}
 */
-export function parseLine (line: string): {err: Error | null, key: string, content: string} {
+
+export function parseLine (line: string): {err: Error | null, content: string, tagInfo: TagInfo | null} {
   if (line.indexOf(symbol) >= 0) {
     let testMatch = line.match(matchTag);
     if (testMatch) {
       let replaceReg = new RegExp(`(${symbol})|\\s`, 'g');
-      let key = testMatch[0].replace(replaceReg, '');
-      if (Object.keys(EffectiveTags).indexOf(key) >= 0) {
+      let key: string= testMatch[0].replace(replaceReg, '');
+      if (effectiveKeys.indexOf(key) >= 0) {
         let content = line.replace(testMatch[0], '');
-        return {err: null, key: key, content: content};
+        content = content.replace(/(^\s*)|(\s*$)/g, '');
+        let tagInfo: TagInfo = new EffectiveTags[key](content);
+        return {err: null, content: '', tagInfo: tagInfo};
       } else {
-        return {err: new Error(`unknow tag: "${symbol}${key}"`), key: '', content: ''};
+        return {err: new Error(`unknow tag: "${symbol}${key}"`), content: '', tagInfo: null};
       }
     } else {
-      return {err: new Error(`can not parse line: "${line}"`), key: '', content: ''};
+      return {err: new Error(`can not parse line: "${line}"`), content: '', tagInfo: null};
     }
   } else {
-    return {err: null, key: '', content: line};
+    return {err: null, content: line, tagInfo: null};
   }
 }
 

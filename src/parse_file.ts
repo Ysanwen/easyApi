@@ -2,6 +2,7 @@ import * as path from "path";
 import * as fs from "fs-extra";
 import ExtractBlock from "./lib/extract_block";
 import { ConfigObject } from './generate_config';
+import { writeJson } from './lib/block_info';
 
 class ParseFile {
 
@@ -9,7 +10,6 @@ class ParseFile {
   outputPath: string;
 
   constructor (config: ConfigObject) {
-    console.log(config)
     let _inputPath = config._inputPath || [];
     let fileArray:string[] = [];
     for (let pathStr of _inputPath) {
@@ -36,10 +36,21 @@ class ParseFile {
   }
 
   parseAllFile (): void {
+    let total = this.inputFiles.length;
+    let start = 0;
     for (let file of this.inputFiles) {
       let extract_block = new ExtractBlock(file);
-      extract_block.doExtract()
+      extract_block.doExtract(() => {
+        start += 1;
+        if (start >= total) {
+          this.allDone();
+        }
+      })
     }
+  }
+
+  allDone ():void {
+    writeJson();
   }
 }
 

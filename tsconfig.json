@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors":true,
     "sourceMap": false,
     "module": "commonjs",
     "target": "es5",
