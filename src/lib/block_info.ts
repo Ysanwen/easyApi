@@ -53,7 +53,8 @@ const commonJson:any = {};
 
 export function writeJson (): void {
   commonJson.versionList = VersionList;
-  commonJson.groupList = GroupList;
+  // commonJson.groupList = GroupList;
+  commonJson.docTitle = config.title;
   Object.assign(commonJson, Define);
   let outputPath = path.resolve(process.cwd(), config.output);
   fs.emptyDir(outputPath, (err) => {
@@ -96,12 +97,16 @@ function writeGroupJson (outputPath:string, BlockInfoList: any):void {
     let blockJson:any = versionObj[version];
     let name = block.Name.key;
     let group = block.Group ? block.Group.key || 'default' : 'default';
+    // add a defaut group
+    // blockJson.default = blockJson.default || {};
     blockJson[group] = blockJson[group] || {};
     blockJson[group][name] = block;
   }
   for (let version in versionObj) {
     let blockJson = versionObj[version];
+    let groupList: string[] = [];
     for (let key in blockJson) {
+      groupList.push(key);
       let groupFileName = key + '.json';
       let writeFile = path.resolve(outputPath, version, groupFileName);
       fs.outputJSON(writeFile, blockJson[key], {spaces: 2}, (err) => {
@@ -111,5 +116,18 @@ function writeGroupJson (outputPath:string, BlockInfoList: any):void {
         }
       })
     }
+    groupList = groupList.sort();
+    let defaultIndex = groupList.indexOf('default');
+    if (defaultIndex >= 0) {
+      groupList.splice(defaultIndex, 1);
+      groupList.splice(0, 0, 'default');
+    }
+    let groupInfo = path.resolve(outputPath, version, 'groupInfo.json');
+    fs.outputJSON(groupInfo, {group: groupList}, {spaces: 2}, (err) => {
+      if (err) {
+        console.log(err);
+        process.exit(1);
+      }
+    })
   }
 }
