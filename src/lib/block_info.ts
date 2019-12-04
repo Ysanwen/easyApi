@@ -22,6 +22,7 @@ export function getBlockInfo (tagInfoArray: TagInfo[]) {
     item.description && (infoDetail.description = item.description);
     item.replaceWith && (infoDetail.replaceWith = item.replaceWith);
     item.valueType && (infoDetail.valueType = item.valueType);
+    item.isRequired !== undefined && item.isRequired !== null && (infoDetail.isRequired = item.isRequired);
     if (item.name === 'HeaderParam'
       || item.name === 'UrlParam'
       || item.name === 'QueryParam'

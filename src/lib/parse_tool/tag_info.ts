@@ -9,6 +9,8 @@
  * @param {string} description the description of tag
  * @param {string} replaceWith for deprecated apis
  * @param {string} key for key of tag
+ * @param {string} valueType value type of tag
+ * @param {boolean} isRequired the value is required or not
  * @param {Error} error the error
  */
 interface TagInfo {
@@ -19,6 +21,7 @@ interface TagInfo {
   replaceWith?: string;
   key?: string;
   valueType?: string;
+  isRequired?: boolean;
   appendDescription?(content: string): void;
   error?: Error;
 }

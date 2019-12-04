@@ -1,6 +1,6 @@
 import TagInfo from './tag_info';
 
-const EffectiveContentType: string[] = ['application/x-www-form-urlencoded', 'multipart/form-data', 'application/json', 'text/xml'];
+const EffectiveContentType: string[] = ['application/x-www-form-urlencoded', 'multipart/form-data', 'application/json', 'text/plain'];
 
 class ContentType implements TagInfo {
 

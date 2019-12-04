@@ -8,6 +8,7 @@ class Param implements TagInfo {
   key: string;
   valueType: string;
   description: string;
+  isRequired: boolean = true;
   error: Error = null;
 
   constructor (content: string) {
@@ -20,6 +21,10 @@ class Param implements TagInfo {
         let paramsKeyMatch = restStr.match(/^\S+\s*/);
         if (paramsKeyMatch) {
           this.key = paramsKeyMatch[0] ? paramsKeyMatch[0].replace(/\s/g, '') : '';
+          if (this.key.indexOf('[') >= 0 && this.key.indexOf(']') >= 0) {
+            this.isRequired = false;
+            this.key = this.key.replace(/\[|\]/g, '');
+          }
           this.description = restStr.replace(paramsKeyMatch[0], '');
         }
         if (!this.key) {
