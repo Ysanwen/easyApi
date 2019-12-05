@@ -1,4 +1,5 @@
 import TagInfo from './tag_info';
+import splitStr from './split_str';
 
 class Reuse implements TagInfo {
 
@@ -7,11 +8,8 @@ class Reuse implements TagInfo {
   error: Error = null;
 
   constructor (content: string) {
-    let isMatch = content.match(/^\S+\s*/);
-    if (isMatch) {
-      let key = isMatch[0].replace(/\s/g, '');
-      this.key = key;
-    }
+    let splitArr = splitStr(content);
+    splitArr[0] && (this.key = splitArr[0]);
   }
 
 }

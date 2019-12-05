@@ -1,4 +1,5 @@
 import TagInfo from './tag_info';
+import splitStr from './split_str';
 
 class Define implements TagInfo {
 
@@ -7,13 +8,11 @@ class Define implements TagInfo {
   error: Error = null;
 
   constructor (content: string) {
-    let isMatch = content.match(/\S+/);
-    if (isMatch) {
-      let key = isMatch[0].replace(/\s/g, '');
-      this.key = key;
+    let splitArr = splitStr(content);
+    if (splitArr[0]) {
+      this.key = splitArr[0];
     }
   }
-
 }
 
 export { Define };

@@ -1,4 +1,5 @@
 import TagInfo from './tag_info';
+import splitStr from './split_str';
 
 class Group implements TagInfo{
   name: string = 'Group';
@@ -6,7 +7,7 @@ class Group implements TagInfo{
   error: Error = null;
 
   constructor (content: string) {
-    let splitArr = content.split(/\s+/g);
+    let splitArr = splitStr(content);
     this.key = splitArr[0] || 'default';
   }
 }

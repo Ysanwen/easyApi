@@ -1,4 +1,5 @@
 import TagInfo from './tag_info';
+import splitStr from './split_str';
 
 class Name implements TagInfo {
   
@@ -8,10 +9,12 @@ class Name implements TagInfo {
   error: Error = null;
 
   constructor (content: string) {
-    let macthName = content.match(/\S+/);
-    if (macthName) {
-      this.key = macthName[0].replace(/\s/g, '');
-      this.description = content.replace(macthName[0], '').replace(/(^\s*)|(\s*$)/g, '');
+    let splitArr = splitStr(content);
+    let name = splitArr[0];
+    let description = splitArr[1];
+    if (name) {
+      this.key = name;
+      this.description = description;
     } else {
       this.error = new Error("Name can not be empty")
     }

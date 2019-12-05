@@ -23,10 +23,14 @@ export function getBlockInfo (tagInfoArray: TagInfo[]) {
     item.replaceWith && (infoDetail.replaceWith = item.replaceWith);
     item.valueType && (infoDetail.valueType = item.valueType);
     item.isRequired !== undefined && item.isRequired !== null && (infoDetail.isRequired = item.isRequired);
+    item.responseType && (infoDetail.responseType = item.responseType);
+    item.responseCode && (infoDetail.responseCode = item.responseCode);
     if (item.name === 'HeaderParam'
       || item.name === 'UrlParam'
       || item.name === 'QueryParam'
-      || item.name === 'BodyParam') {
+      || item.name === 'BodyParam'
+      || item.name === 'SuccessResponse'
+      || item.name === 'ErrorResponse') {
       info[item.name] = info[item.name] || [];
       info[item.name].push(infoDetail);
     } else {

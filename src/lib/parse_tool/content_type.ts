@@ -1,4 +1,5 @@
 import TagInfo from './tag_info';
+import splitStr from './split_str';
 
 const EffectiveContentType: string[] = ['application/x-www-form-urlencoded', 'multipart/form-data', 'application/json', 'text/plain'];
 
@@ -9,9 +10,10 @@ class ContentType implements TagInfo {
   error: Error = null;
 
   constructor (content: string) {
-    let isMatch = content.split(/\s/g);
-    if (isMatch) {
-      let key = isMatch[0].replace(/\s/g, '').toLocaleLowerCase();
+    let splitArr = splitStr(content);
+    let key = splitArr[0];
+    if (key) {
+      key = key.toLocaleLowerCase();
       if (EffectiveContentType.indexOf(key) >= 0) {
         this.key = key;
       } else {

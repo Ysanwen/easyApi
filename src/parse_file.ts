@@ -24,7 +24,7 @@ class ParseFile {
     let status = fs.lstatSync(pathStr);
     if (status.isDirectory()) {
       let pathList = fs.readdirSync(pathStr);
-      pathList = pathList.map((subPath) => {
+      pathList = pathList.map((subPath: string) => {
         let newPath = path.resolve(pathStr, subPath);
         fileArray = fileArray.concat(this.parsePath(newPath))
         return newPath;
