@@ -14,7 +14,10 @@ interface CallbackFunction {
  * title: api doc title  
  * input: the input source file or directory  
  * output: the ouptut document directory  
+ * baseUrl: the host of api request  
  * config: the config json file path  
+ * server: static web server host  
+ * port: static web server port  
  */
 export interface ConfigObject {
   version: string;
@@ -23,6 +26,8 @@ export interface ConfigObject {
   output: string;
   baseUrl: string;
   config: string;
+  server: string;
+  port: string;
   [key: string]: any;
 }
 
@@ -32,11 +37,13 @@ const config: ConfigObject = {
   input: '',
   output: './api_doc',
   baseUrl: '',
-  config: './easy.config.json'
+  config: './easy.config.json',
+  server: 'localhost',
+  port: '8081'
 }
 
 // check the input file is available
-function checkInput (): boolean {
+export function checkInput (config: ConfigObject): boolean {
   if (!config.input) {
     console.log('the input file path must be specified')
     return false;
@@ -79,9 +86,6 @@ export function generateConfigJson (cmdObject: Command, callback: CallbackFuncti
           for (let key in configJson) {
             key === 'version' ? config[key] = configJson[key] : configJson[key] && (config[key] = config[key] || configJson[key]);
           }
-          if (!checkInput()) {
-            err = new Error(`input file  error: ${config.input}`);
-          }
         }
         err ? callback(err, null) : callback(null, config);
       })
@@ -90,7 +94,7 @@ export function generateConfigJson (cmdObject: Command, callback: CallbackFuncti
       callback(err, null);
     }
   } else {
-    checkInput() ? callback(null, config) : callback(new Error(`input file  error: ${config.input}`), null);
+    callback(null, config);
   }
 }
 

@@ -61,7 +61,7 @@ export function writeJson (): void {
   // commonJson.groupList = GroupList;
   commonJson.docTitle = config.title;
   Object.assign(commonJson, Define);
-  let outputPath = path.resolve(process.cwd(), config.output);
+  let outputPath = path.resolve(process.cwd(), config.output, 'data');
   fs.emptyDir(outputPath, (err) => {
     if (err) {
       console.log(err);
@@ -69,6 +69,17 @@ export function writeJson (): void {
     } else {
       writeCommonJson(outputPath, commonJson);
       writeGroupJson(outputPath, BlockInfoList);
+      copyTemplate(path.resolve(process.cwd(), config.output));
+    }
+  })
+}
+
+function copyTemplate (toDir: string): void {
+  let templatePath = path.resolve(__dirname, '../../template');
+  fs.copy(templatePath, toDir, (err) => {
+    if (err) {
+      console.log(err);
+      process.exit(1);
     }
   })
 }

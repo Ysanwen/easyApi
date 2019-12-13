@@ -1,5 +1,6 @@
 import { Command } from 'commander';
-import { ConfigObject, generateConfigJson } from './generate_config';
+import Server from './server';
+import { ConfigObject, generateConfigJson, checkInput } from './generate_config';
 import ParseFile from './parse_file';
 
 
@@ -18,14 +19,16 @@ const version = '0.0.1';
 const options: Options[] = [
   { flag: '-i, --input <file>', description: 'input file or directory, default will walk through current working directory' },
   { flag: '-o, --output <path>', description: 'output file directory, default will create a "easyApi" folder in current working directory' },
-  { flag: '-c, --config <file>', description: 'the config.json file' }
+  { flag: '-c, --config <file>', description: 'the config.json file' },
+  { flag: '-s, --server [serveraddr]', description: 'static server host' },
+  { flag: '-p, --port <port>', description: 'static server port' }
 ]
 
 
-class CMD {
+export class CMD {
   commander: Command;
 
-  constructor(options: Options[]) {
+  constructor() {
     this.commander = new Command();
     this.commander.version(version);
     for (let op of options) {
@@ -40,16 +43,27 @@ class CMD {
         console.log(err.message);
         process.exit(1);
       } else {
-        this.startParseFile(config)
+        if (config.input) {
+          this.startParseFile(config);
+        }
+        if (this.commander.server || this.commander.port) {
+          this.startServer();
+        }
       }
     })
   }
 
   startParseFile (config: ConfigObject):void {
-    let newParse = new ParseFile(config);
-    newParse.parseAllFile();
+    if (checkInput(config)) {
+      let newParse = new ParseFile(config);
+      newParse.parseAllFile();
+    } else {
+      process.exit(1);
+    }
+  }
+
+  startServer (): void {
+    let app = new Server();
+    app.startServer();
   }
 }
-
-let cmd = new CMD(options);
-cmd.startCmd();

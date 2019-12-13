@@ -25,4 +25,4 @@ const regexConfig: RegexConfig = {
     fileSuffix: 'js, ts, javascript',
   }
 }
-export default regexConfig
+export default regexConfig;
