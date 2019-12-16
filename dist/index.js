@@ -30,8 +30,6 @@ var CMD = (function () {
                 process.exit(1);
             }
             else {
-                console.log(config);
-                console.log(_this.commander);
                 if (config.input) {
                     _this.startParseFile(config);
                 }

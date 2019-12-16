@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs-extra");
 var path = require("path");
 var config = {
-    version: 'v1.0.0',
+    version: '1.0.0',
     title: 'easy api doc',
     input: '',
     output: './api_doc',
