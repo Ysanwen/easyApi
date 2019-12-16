@@ -39,9 +39,11 @@ class ParseFile {
     let total = this.inputFiles.length;
     let start = 0;
     for (let file of this.inputFiles) {
+      console.log(`start parse file: "${file}"`)
       let extract_block = new ExtractBlock(file);
       extract_block.doExtract(() => {
         start += 1;
+        console.log(`parse file: "${file}" success!`)
         if (start >= total) {
           this.allDone();
         }

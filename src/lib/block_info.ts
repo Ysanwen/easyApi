@@ -105,6 +105,36 @@ function getVersion (block: any): string {
   }
 }
 
+function getGroup (block:any):string {
+  if (block.Group) {
+    return block.Group.key;
+  } else if (block.Reuse) {
+    let reuseKey = block.Reuse.key;
+    if (Define[reuseKey] && Define[reuseKey].Group && Define[reuseKey].Group.key) {
+      return Define[reuseKey].Group.key
+    } else {
+      return 'default';
+    }
+  } else {
+    return 'default';
+  }
+}
+
+function mergeReuseKey (blockJson: any): any {
+  for (let key in blockJson) {
+    if (blockJson[key].Reuse && blockJson[key].Reuse.key) {
+      let reuseKey = blockJson[key].Reuse.key;
+      let defineObject = Define[reuseKey];
+      if (defineObject) {
+        for (let defineKey in defineObject) {
+          !blockJson[key][defineKey] && defineKey !== 'Define' && defineObject[defineKey] && (blockJson[key][defineKey] = defineObject[defineKey]);
+        }
+      }
+    }
+  }
+  return blockJson;
+}
+
 function writeGroupJson (outputPath:string, BlockInfoList: any):void {
   let versionObj:any = {};
   for (let block of BlockInfoList) {
@@ -112,7 +142,7 @@ function writeGroupJson (outputPath:string, BlockInfoList: any):void {
     versionObj[version] = versionObj[version] || {};
     let blockJson:any = versionObj[version];
     let name = block.Name.key;
-    let group = block.Group ? block.Group.key || 'default' : 'default';
+    let group = getGroup(block);
     // add a defaut group
     // blockJson.default = blockJson.default || {};
     blockJson[group] = blockJson[group] || {};
@@ -125,7 +155,7 @@ function writeGroupJson (outputPath:string, BlockInfoList: any):void {
       groupList.push(key);
       let groupFileName = key + '.json';
       let writeFile = path.resolve(outputPath, version, groupFileName);
-      fs.outputJSON(writeFile, blockJson[key], {spaces: 2}, (err) => {
+      fs.outputJSON(writeFile, mergeReuseKey(blockJson[key]), {spaces: 2}, (err) => {
         if (err) {
           console.log(err);
           process.exit(1);

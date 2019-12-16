@@ -101,6 +101,37 @@ function getVersion(block) {
         return config.version;
     }
 }
+function getGroup(block) {
+    if (block.Group) {
+        return block.Group.key;
+    }
+    else if (block.Reuse) {
+        var reuseKey = block.Reuse.key;
+        if (Define[reuseKey] && Define[reuseKey].Group && Define[reuseKey].Group.key) {
+            return Define[reuseKey].Group.key;
+        }
+        else {
+            return 'default';
+        }
+    }
+    else {
+        return 'default';
+    }
+}
+function mergeReuseKey(blockJson) {
+    for (var key in blockJson) {
+        if (blockJson[key].Reuse && blockJson[key].Reuse.key) {
+            var reuseKey = blockJson[key].Reuse.key;
+            var defineObject = Define[reuseKey];
+            if (defineObject) {
+                for (var defineKey in defineObject) {
+                    !blockJson[key][defineKey] && defineKey !== 'Define' && defineObject[defineKey] && (blockJson[key][defineKey] = defineObject[defineKey]);
+                }
+            }
+        }
+    }
+    return blockJson;
+}
 function writeGroupJson(outputPath, BlockInfoList) {
     var versionObj = {};
     for (var _i = 0, BlockInfoList_1 = BlockInfoList; _i < BlockInfoList_1.length; _i++) {
@@ -109,7 +140,7 @@ function writeGroupJson(outputPath, BlockInfoList) {
         versionObj[version] = versionObj[version] || {};
         var blockJson = versionObj[version];
         var name_1 = block.Name.key;
-        var group = block.Group ? block.Group.key || 'default' : 'default';
+        var group = getGroup(block);
         blockJson[group] = blockJson[group] || {};
         blockJson[group][name_1] = block;
     }
@@ -120,7 +151,7 @@ function writeGroupJson(outputPath, BlockInfoList) {
             groupList.push(key);
             var groupFileName = key + '.json';
             var writeFile = path.resolve(outputPath, version, groupFileName);
-            fs.outputJSON(writeFile, blockJson[key], { spaces: 2 }, function (err) {
+            fs.outputJSON(writeFile, mergeReuseKey(blockJson[key]), { spaces: 2 }, function (err) {
                 if (err) {
                     console.log(err);
                     process.exit(1);

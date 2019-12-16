@@ -1,12 +1,13 @@
 {
   "name": "easyapi",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "generate api docment in a easy way",
   "main": "src/index.ts",
-  "bin": "bin/eazyApi",
+  "bin": {
+    "easyApi": "./bin/easyApi.js"
+  },
   "scripts": {
     "build": "node_modules/typescript/bin/tsc",
-    "devServer": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "ysw",

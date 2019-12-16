@@ -36,15 +36,20 @@ var ParseFile = (function () {
         var _this = this;
         var total = this.inputFiles.length;
         var start = 0;
-        for (var _i = 0, _a = this.inputFiles; _i < _a.length; _i++) {
-            var file = _a[_i];
+        var _loop_1 = function (file) {
+            console.log("start parse file: \"" + file + "\"");
             var extract_block = new extract_block_1.default(file);
             extract_block.doExtract(function () {
                 start += 1;
+                console.log("parse file: \"" + file + "\" success!");
                 if (start >= total) {
                     _this.allDone();
                 }
             });
+        };
+        for (var _i = 0, _a = this.inputFiles; _i < _a.length; _i++) {
+            var file = _a[_i];
+            _loop_1(file);
         }
     };
     ParseFile.prototype.allDone = function () {

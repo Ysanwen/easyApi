@@ -32,7 +32,7 @@ export interface ConfigObject {
 }
 
 const config: ConfigObject = {
-  version: 'v1.0.0',
+  version: '1.0.0',
   title: 'easy api doc',
   input: '',
   output: './api_doc',
