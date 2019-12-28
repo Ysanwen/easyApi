@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs-extra");
 var readline = require("readline");
+var color_log_1 = require("../color_log");
 var guess_file_type_1 = require("./guess_file_type");
 var handleTags = require("./handle_tags");
 var block_info_1 = require("./block_info");
@@ -57,14 +58,14 @@ var ExtractBlock = (function () {
             var lineInfo = _a[_i];
             var parseInfo = handleTags.parseLine(lineInfo.content);
             if (parseInfo.err) {
-                console.log(parseInfo.err.message + " at line number " + lineInfo.lineNumber + " of " + this.inputFile);
+                color_log_1.errorLog(parseInfo.err.message + " at line number " + lineInfo.lineNumber + " of " + this.inputFile);
                 currentTagInfo = null;
             }
             else {
                 if (parseInfo.tagInfo) {
                     if (parseInfo.tagInfo.error) {
                         var errMsg = parseInfo.tagInfo.error.message;
-                        console.log(errMsg + " at line number " + lineInfo.lineNumber + " of " + this.inputFile);
+                        color_log_1.errorLog(errMsg + " at line number " + lineInfo.lineNumber + " of " + this.inputFile);
                         currentTagInfo = null;
                     }
                     else {

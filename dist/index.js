@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var commander_1 = require("commander");
 var server_1 = require("./server");
 var generate_config_1 = require("./generate_config");
+var color_log_1 = require("./color_log");
 var parse_file_1 = require("./parse_file");
 var version = '0.0.1';
 var options = [
@@ -26,11 +27,12 @@ var CMD = (function () {
         this.commander.parse(process.argv);
         generate_config_1.generateConfigJson(this.commander, function (err, config) {
             if (err) {
-                console.log(err.message);
+                color_log_1.errorLog(err.message);
                 process.exit(1);
             }
             else {
                 if (config.input) {
+                    config._startTime = Math.floor(new Date().getTime() / 1000);
                     _this.startParseFile(config);
                 }
                 if (_this.commander.server || _this.commander.port) {

@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import Server from './server';
 import { ConfigObject, generateConfigJson, checkInput } from './generate_config';
+import { errorLog } from './color_log';
 import ParseFile from './parse_file';
 
 
@@ -40,10 +41,11 @@ export class CMD {
     this.commander.parse(process.argv);
     generateConfigJson(this.commander, (err, config: ConfigObject) => {
       if (err) {
-        console.log(err.message);
+        errorLog(err.message);
         process.exit(1);
       } else {
         if (config.input) {
+          config._startTime = Math.floor(new Date().getTime() / 1000);
           this.startParseFile(config);
         }
         if (this.commander.server || this.commander.port) {

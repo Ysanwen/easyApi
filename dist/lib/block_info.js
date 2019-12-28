@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var generate_config_1 = require("../generate_config");
 var fs = require("fs-extra");
 var path = require("path");
+var color_log_1 = require("../color_log");
 var VersionList = [];
 var GroupList = [];
 var BlockInfoList = [];
@@ -60,7 +61,7 @@ function writeJson() {
     var outputPath = path.resolve(process.cwd(), config.output, 'data');
     fs.emptyDir(outputPath, function (err) {
         if (err) {
-            console.log(err);
+            color_log_1.errorLog(err.message);
             process.exit(1);
         }
         else {
@@ -75,19 +76,14 @@ function copyTemplate(toDir) {
     var templatePath = path.resolve(__dirname, '../../template');
     fs.copy(templatePath, toDir, function (err) {
         if (err) {
-            console.log(err);
+            color_log_1.errorLog(err.message);
             process.exit(1);
         }
     });
 }
 function writeCommonJson(outputPath, commonJson) {
     var writeFile = path.resolve(outputPath, './common.json');
-    fs.outputJSON(writeFile, commonJson, { spaces: 2 }, function (err) {
-        if (err) {
-            console.log(err);
-            process.exit(1);
-        }
-    });
+    doWriteJsonFile(writeFile, commonJson);
 }
 function getVersion(block) {
     if (block.Version) {
@@ -151,12 +147,7 @@ function writeGroupJson(outputPath, BlockInfoList) {
             groupList.push(key);
             var groupFileName = key + '.json';
             var writeFile = path.resolve(outputPath, version, groupFileName);
-            fs.outputJSON(writeFile, mergeReuseKey(blockJson[key]), { spaces: 2 }, function (err) {
-                if (err) {
-                    console.log(err);
-                    process.exit(1);
-                }
-            });
+            doWriteJsonFile(writeFile, mergeReuseKey(blockJson[key]));
         }
         groupList = groupList.sort();
         var defaultIndex = groupList.indexOf('default');
@@ -165,11 +156,22 @@ function writeGroupJson(outputPath, BlockInfoList) {
             groupList.splice(0, 0, 'default');
         }
         var groupInfo = path.resolve(outputPath, version, 'groupInfo.json');
-        fs.outputJSON(groupInfo, { group: groupList }, { spaces: 2 }, function (err) {
-            if (err) {
-                console.log(err);
-                process.exit(1);
-            }
-        });
+        doWriteJsonFile(groupInfo, { group: groupList });
     }
+}
+var totalOutPutFile = 0;
+function doWriteJsonFile(pathStr, fileObject) {
+    totalOutPutFile += 1;
+    fs.outputJSON(pathStr, fileObject, { spaces: 2 }, function (err) {
+        if (err) {
+            color_log_1.errorLog(err.message);
+            process.exit(1);
+        }
+        totalOutPutFile -= 1;
+        if (totalOutPutFile <= 0) {
+            var useTime = Math.floor(new Date().getTime() / 1000) - config._startTime || 0;
+            color_log_1.successLog("complete all the files, use time: " + useTime + " seconds");
+            color_log_1.infoLog('you can use "easyApi -s -o [publick path]" to start a static server');
+        }
+    });
 }

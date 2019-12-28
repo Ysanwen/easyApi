@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs-extra");
 var path = require("path");
+var color_log_1 = require("./color_log");
 var config = {
     version: '1.0.0',
     title: 'easy api doc',
@@ -10,11 +11,11 @@ var config = {
     baseUrl: '',
     config: './easy.config.json',
     server: 'localhost',
-    port: '8081'
+    port: '9527'
 };
 function checkInput(config) {
     if (!config.input) {
-        console.log('the input file path must be specified');
+        color_log_1.errorLog('the input file path must be specified');
         return false;
     }
     else {
@@ -24,7 +25,7 @@ function checkInput(config) {
             var _path = path.resolve(process.cwd(), item);
             if (!fs.existsSync(_path)) {
                 hasNoErr_1 = false;
-                console.log("no this file path " + item);
+                color_log_1.errorLog("no this file path " + item);
             }
             return _path;
         });
@@ -35,7 +36,8 @@ function checkInput(config) {
 exports.checkInput = checkInput;
 function generateConfigJson(cmdObject, callback) {
     for (var key in config) {
-        key !== 'version' && cmdObject[key] && (config[key] = cmdObject[key]);
+        key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key]);
+        cmdObject.server !== true && (config.server = cmdObject.server);
     }
     if (cmdObject.config) {
         var cfgPath_1 = path.resolve(process.cwd(), cmdObject.config);

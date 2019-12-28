@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var path = require("path");
 var generate_config_1 = require("./generate_config");
+var color_log_1 = require("./color_log");
 var Server = (function () {
     function Server() {
         this.appServer = express();
@@ -34,10 +35,10 @@ var Server = (function () {
         var port = this.config.port;
         this.appServer.listen(port, host, function (err) {
             if (err) {
-                console.log(err);
+                color_log_1.errorLog(err.message);
                 return false;
             }
-            console.log('server start at ' + host + ':' + port);
+            color_log_1.successLog('server start at ' + host + ':' + port);
         });
     };
     return Server;

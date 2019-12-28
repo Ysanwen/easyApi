@@ -2,6 +2,7 @@ import TagInfo from './parse_tool/tag_info'
 import { getConfig, ConfigObject } from '../generate_config';
 import * as fs from "fs-extra";
 import * as path from "path";
+import { errorLog, infoLog, successLog } from '../color_log';
 
 
 const VersionList: string[] = [];
@@ -62,9 +63,9 @@ export function writeJson (): void {
   commonJson.docTitle = config.title;
   Object.assign(commonJson, Define);
   let outputPath = path.resolve(process.cwd(), config.output, 'data');
-  fs.emptyDir(outputPath, (err) => {
+  fs.emptyDir(outputPath, (err: Error) => {
     if (err) {
-      console.log(err);
+      errorLog(err.message);
       process.exit(1);
     } else {
       writeCommonJson(outputPath, commonJson);
@@ -76,9 +77,9 @@ export function writeJson (): void {
 
 function copyTemplate (toDir: string): void {
   let templatePath = path.resolve(__dirname, '../../template');
-  fs.copy(templatePath, toDir, (err) => {
+  fs.copy(templatePath, toDir, (err:Error) => {
     if (err) {
-      console.log(err);
+      errorLog(err.message);
       process.exit(1);
     }
   })
@@ -86,12 +87,7 @@ function copyTemplate (toDir: string): void {
 
 function writeCommonJson (outputPath: string, commonJson: any): void {
   let writeFile = path.resolve(outputPath, './common.json');
-  fs.outputJSON(writeFile, commonJson, {spaces: 2}, (err) => {
-    if (err) {
-      console.log(err);
-      process.exit(1);
-    }
-  })
+  doWriteJsonFile(writeFile, commonJson);
 }
 
 function getVersion (block: any): string {
@@ -143,8 +139,6 @@ function writeGroupJson (outputPath:string, BlockInfoList: any):void {
     let blockJson:any = versionObj[version];
     let name = block.Name.key;
     let group = getGroup(block);
-    // add a defaut group
-    // blockJson.default = blockJson.default || {};
     blockJson[group] = blockJson[group] || {};
     blockJson[group][name] = block;
   }
@@ -155,12 +149,7 @@ function writeGroupJson (outputPath:string, BlockInfoList: any):void {
       groupList.push(key);
       let groupFileName = key + '.json';
       let writeFile = path.resolve(outputPath, version, groupFileName);
-      fs.outputJSON(writeFile, mergeReuseKey(blockJson[key]), {spaces: 2}, (err) => {
-        if (err) {
-          console.log(err);
-          process.exit(1);
-        }
-      })
+      doWriteJsonFile(writeFile, mergeReuseKey(blockJson[key]));
     }
     groupList = groupList.sort();
     let defaultIndex = groupList.indexOf('default');
@@ -169,11 +158,23 @@ function writeGroupJson (outputPath:string, BlockInfoList: any):void {
       groupList.splice(0, 0, 'default');
     }
     let groupInfo = path.resolve(outputPath, version, 'groupInfo.json');
-    fs.outputJSON(groupInfo, {group: groupList}, {spaces: 2}, (err) => {
-      if (err) {
-        console.log(err);
-        process.exit(1);
-      }
-    })
+    doWriteJsonFile(groupInfo, {group: groupList});
   }
+}
+
+let totalOutPutFile = 0;
+function doWriteJsonFile(pathStr: string, fileObject: any): void {
+  totalOutPutFile += 1;
+  fs.outputJSON(pathStr, fileObject, {spaces: 2}, (err:Error) => {
+    if (err) {
+      errorLog(err.message);
+      process.exit(1);
+    }
+    totalOutPutFile -= 1;
+    if (totalOutPutFile <= 0) {
+      let useTime = Math.floor(new Date().getTime() / 1000) - config._startTime || 0;
+      successLog(`complete all the files, use time: ${useTime} seconds`);
+      infoLog('you can use "easyApi -s -o [publick path]" to start a static server');
+    }
+  })
 }

@@ -3,6 +3,7 @@
  */
 import * as fs from "fs-extra";
 import * as readline from "readline";
+import { errorLog } from '../color_log';
 import guessFileType from './guess_file_type';
 import * as handleTags from './handle_tags';
 import TagInfo from './parse_tool/tag_info';
@@ -70,13 +71,13 @@ class ExtractBlock {
     for (let lineInfo of this.cacheLine) {
       let parseInfo = handleTags.parseLine(lineInfo.content);
       if (parseInfo.err) {
-        console.log(`${parseInfo.err.message} at line number ${lineInfo.lineNumber} of ${this.inputFile}`);
+        errorLog(`${parseInfo.err.message} at line number ${lineInfo.lineNumber} of ${this.inputFile}`);
         currentTagInfo = null;
       } else {
         if (parseInfo.tagInfo) {
           if (parseInfo.tagInfo.error) {
             let errMsg = parseInfo.tagInfo.error.message;
-            console.log(`${errMsg} at line number ${lineInfo.lineNumber} of ${this.inputFile}`);
+            errorLog(`${errMsg} at line number ${lineInfo.lineNumber} of ${this.inputFile}`);
             currentTagInfo = null;
           } else {
             infoArray.push(parseInfo.tagInfo);

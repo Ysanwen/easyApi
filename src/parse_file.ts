@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as fs from "fs-extra";
+import { infoLog } from './color_log';
 import ExtractBlock from "./lib/extract_block";
 import { ConfigObject } from './generate_config';
 import { writeJson } from './lib/block_info';
@@ -39,11 +40,10 @@ class ParseFile {
     let total = this.inputFiles.length;
     let start = 0;
     for (let file of this.inputFiles) {
-      console.log(`start parse file: "${file}"`)
+      infoLog(`start parse file: "${file}"`)
       let extract_block = new ExtractBlock(file);
       extract_block.doExtract(() => {
         start += 1;
-        console.log(`parse file: "${file}" success!`)
         if (start >= total) {
           this.allDone();
         }

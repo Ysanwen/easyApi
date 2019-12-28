@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var path = require("path");
 var fs = require("fs-extra");
+var color_log_1 = require("./color_log");
 var extract_block_1 = require("./lib/extract_block");
 var block_info_1 = require("./lib/block_info");
 var ParseFile = (function () {
@@ -36,20 +37,16 @@ var ParseFile = (function () {
         var _this = this;
         var total = this.inputFiles.length;
         var start = 0;
-        var _loop_1 = function (file) {
-            console.log("start parse file: \"" + file + "\"");
+        for (var _i = 0, _a = this.inputFiles; _i < _a.length; _i++) {
+            var file = _a[_i];
+            color_log_1.infoLog("start parse file: \"" + file + "\"");
             var extract_block = new extract_block_1.default(file);
             extract_block.doExtract(function () {
                 start += 1;
-                console.log("parse file: \"" + file + "\" success!");
                 if (start >= total) {
                     _this.allDone();
                 }
             });
-        };
-        for (var _i = 0, _a = this.inputFiles; _i < _a.length; _i++) {
-            var file = _a[_i];
-            _loop_1(file);
         }
     };
     ParseFile.prototype.allDone = function () {

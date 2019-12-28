@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as path from 'path';
 import { ConfigObject, getConfig } from './generate_config';
+import { errorLog, successLog } from './color_log';
 
 class Server {
   appServer;
@@ -39,10 +40,10 @@ class Server {
     let port = this.config.port;
     this.appServer.listen(port, host, (err) => {
       if (err) {
-        console.log(err)
+        errorLog(err.message)
         return false
       }
-      console.log('server start at ' + host  + ':' + port)
+      successLog('server start at ' + host  + ':' + port);
     })
   }
 }

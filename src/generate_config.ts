@@ -3,6 +3,7 @@
  */
 import * as fs from "fs-extra";
 import * as path from "path";
+import { errorLog } from './color_log';
 import { Command } from 'commander';
 
 interface CallbackFunction {
@@ -39,13 +40,13 @@ const config: ConfigObject = {
   baseUrl: '',
   config: './easy.config.json',
   server: 'localhost',
-  port: '8081'
+  port: '9527'
 }
 
 // check the input file is available
 export function checkInput (config: ConfigObject): boolean {
   if (!config.input) {
-    console.log('the input file path must be specified')
+    errorLog('the input file path must be specified')
     return false;
   } else {
     let hasNoErr = true;
@@ -54,7 +55,7 @@ export function checkInput (config: ConfigObject): boolean {
       let _path = path.resolve(process.cwd(), item);
       if (!fs.existsSync(_path)) {
         hasNoErr = false;
-        console.log(`no this file path ${item}`)
+        errorLog(`no this file path ${item}`)
       }
       return _path;
     })
@@ -73,13 +74,14 @@ export function checkInput (config: ConfigObject): boolean {
 */
 export function generateConfigJson (cmdObject: Command, callback: CallbackFunction): void {
   for (let key in config) {
-    key !== 'version' && cmdObject[key] && (config[key] = cmdObject[key])
+    key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key])
+    cmdObject.server !== true && (config.server = cmdObject.server)
   }
   if (cmdObject.config) {
     let cfgPath = path.resolve(process.cwd(), cmdObject.config);
     let err: Error = null;
     if (fs.existsSync(cfgPath)) {
-      fs.readJSON(cfgPath, function (error,configJson) {
+      fs.readJSON(cfgPath, function (error, configJson) {
         if (error) {
           err = new Error(`some error with config file: ${cfgPath} ${error.message}`);
         } else {
