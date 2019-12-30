@@ -174,7 +174,7 @@ function doWriteJsonFile(pathStr: string, fileObject: any): void {
     if (totalOutPutFile <= 0) {
       let useTime = Math.floor(new Date().getTime() / 1000) - config._startTime || 0;
       successLog(`complete all the files, use time: ${useTime} seconds`);
-      infoLog('you can use "easyApi -s -o [publick path]" to start a static server');
+      infoLog('you can use "easyApi -s -o [public path]" to start a static server');
     }
   })
 }
