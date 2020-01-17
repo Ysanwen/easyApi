@@ -11,7 +11,7 @@
 interface LanguageConfig {
   prefixRegex: RegExp;
   suffixRegex: RegExp;
-  fileSuffix: string;
+  fileSuffix: string[];
 }
 
 interface RegexConfig {
@@ -20,9 +20,39 @@ interface RegexConfig {
 
 const regexConfig: RegexConfig = {
   "javascript": {
-    prefixRegex: /^[\/\*]*\s?/g,
-    suffixRegex: /\s?\*+\/$/g,
-    fileSuffix: 'js, ts, javascript',
+    prefixRegex: /^[\/\*\s]*\s*/g,
+    suffixRegex: /\s*\*\/\s*$/g,
+    fileSuffix: ['js', 'ts', 'javascript'],
+  },
+  "java": {
+    prefixRegex: /^[\/\*\s]*\s*/g,
+    suffixRegex: /\s*\*\/\s*$/g,
+    fileSuffix: ['java'],
+  },
+  "c": {
+    prefixRegex: /^[\/\*\s]*\s*/g,
+    suffixRegex: /\s*\*\/\s*$/g,
+    fileSuffix: ['c', 'cpp', 'cs'],
+  },
+  "php": {
+    prefixRegex: /^[\/\*\s]*\s*/g,
+    suffixRegex: /\s*\*\/\s*$/g,
+    fileSuffix: ['php'],
+  },
+  "swift": {
+    prefixRegex: /^[\/\*\s]*\s*/g,
+    suffixRegex: /\s*\*\/\s*$/g,
+    fileSuffix: ['swift'],
+  },
+  "go": {
+    prefixRegex: /^[\/\*\s]*\s*/g,
+    suffixRegex: /\s*\*\/\s*$/g,
+    fileSuffix: ['go'],
+  },
+  "python": {
+    prefixRegex: /^[#(""")(''')\*\s]*\s*/g,
+    suffixRegex: /\s*[(""")(''')]\s*$/g,
+    fileSuffix: ['py'],
   }
 }
 export default regexConfig;

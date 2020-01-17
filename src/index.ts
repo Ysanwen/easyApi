@@ -19,7 +19,7 @@ interface Options {
 const version = '0.0.1';
 const options: Options[] = [
   { flag: '-i, --input <file>', description: 'input file or directory, default will walk through current working directory' },
-  { flag: '-o, --output <path>', description: 'output file directory, default will create a "easyApi" folder in current working directory' },
+  { flag: '-o, --output <path>', description: 'output file directory, default will create a "api_doc" folder in current working directory' },
   { flag: '-c, --config <file>', description: 'the config.json file' },
   { flag: '-s, --server [serveraddr]', description: 'static server host' },
   { flag: '-p, --port <port>', description: 'static server port' }

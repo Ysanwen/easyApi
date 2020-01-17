@@ -4,7 +4,7 @@
 import regexConfig from '../regex_config'; 
 
 function getSuffix (filename: string): string {
-  let testMatch =  filename.match(/\.[a-zA-Z]/);
+  let testMatch =  filename.match(/\.[a-zA-Z]+$/g);
   return testMatch ? testMatch[0] : '';
 }
 
