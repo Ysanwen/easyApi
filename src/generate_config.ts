@@ -39,11 +39,11 @@ const config: ConfigObject = {
   output: './api_doc',
   baseUrl: '',
   config: './easy.config.json',
-  server: 'localhost',
-  port: '9527'
+  server: '',
+  port: ''
 }
 
-// check the input file is available
+// check the config file is available
 export function checkInput (config: ConfigObject): boolean {
   if (!config.input) {
     errorLog('the input file path must be specified')
@@ -73,30 +73,38 @@ export function checkInput (config: ConfigObject): boolean {
  * 
 */
 export function generateConfigJson (cmdObject: Command, callback: CallbackFunction): void {
-  for (let key in config) {
-    key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key])
-    cmdObject.server !== true && (config.server = cmdObject.server)
-  }
-  if (cmdObject.config) {
-    let cfgPath = path.resolve(process.cwd(), cmdObject.config);
-    let err: Error = null;
-    if (fs.existsSync(cfgPath)) {
-      fs.readJSON(cfgPath, function (error, configJson) {
-        if (error) {
-          err = new Error(`some error with config file: ${cfgPath} ${error.message}`);
-        } else {
-          for (let key in configJson) {
-            key === 'version' ? config[key] = configJson[key] : configJson[key] && (config[key] = config[key] || configJson[key]);
-          }
-        }
-        err ? callback(err, null) : callback(null, config);
-      })
-    } else {
-      err = new Error(`no this config file: ${cfgPath}`);
-      callback(err, null);
+  let configFile = cmdObject.config || '';
+  let cfgPath = '';
+  if (configFile) {
+    cfgPath = path.resolve(process.cwd(), configFile);
+    if (!fs.existsSync(cfgPath)) {
+      callback(new Error(`no this config file: ${configFile}`), null);
+      return;   
     }
+  }
+  cfgPath = cfgPath || path.resolve(process.cwd(), config.config);
+  let err: Error = null;
+  if (fs.existsSync(cfgPath)) {
+    fs.readJSON(cfgPath, function (error, configJson) {
+      if (error) {
+        err = new Error(`some error with config file: ${cfgPath} ${error.message}`);
+      } else {
+        for (let key in configJson) {
+          configJson[key] && (config[key] = configJson[key]);
+        }
+      }
+      for (let key in config) {
+        key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key])
+        cmdObject.server && cmdObject.server !== true && (config.server = cmdObject.server)
+      }
+      err ? callback(err, null) : callback(null, config);
+    })
   } else {
-    callback(null, config);
+    for (let key in config) {
+      key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key])
+      cmdObject.server && cmdObject.server !== true && (config.server = cmdObject.server)
+    }
+    err ? callback(err, null) : callback(null, config);
   }
 }
 

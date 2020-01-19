@@ -10,8 +10,8 @@ var config = {
     output: './api_doc',
     baseUrl: '',
     config: './easy.config.json',
-    server: 'localhost',
-    port: '9527'
+    server: '',
+    port: ''
 };
 function checkInput(config) {
     if (!config.input) {
@@ -35,33 +35,40 @@ function checkInput(config) {
 }
 exports.checkInput = checkInput;
 function generateConfigJson(cmdObject, callback) {
-    for (var key in config) {
-        key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key]);
-        cmdObject.server !== true && (config.server = cmdObject.server);
+    var configFile = cmdObject.config || '';
+    var cfgPath = '';
+    if (configFile) {
+        cfgPath = path.resolve(process.cwd(), configFile);
+        if (!fs.existsSync(cfgPath)) {
+            callback(new Error("no this config file: " + configFile), null);
+            return;
+        }
     }
-    if (cmdObject.config) {
-        var cfgPath_1 = path.resolve(process.cwd(), cmdObject.config);
-        var err_1 = null;
-        if (fs.existsSync(cfgPath_1)) {
-            fs.readJSON(cfgPath_1, function (error, configJson) {
-                if (error) {
-                    err_1 = new Error("some error with config file: " + cfgPath_1 + " " + error.message);
+    cfgPath = cfgPath || path.resolve(process.cwd(), config.config);
+    var err = null;
+    if (fs.existsSync(cfgPath)) {
+        fs.readJSON(cfgPath, function (error, configJson) {
+            if (error) {
+                err = new Error("some error with config file: " + cfgPath + " " + error.message);
+            }
+            else {
+                for (var key in configJson) {
+                    configJson[key] && (config[key] = configJson[key]);
                 }
-                else {
-                    for (var key in configJson) {
-                        key === 'version' ? config[key] = configJson[key] : configJson[key] && (config[key] = config[key] || configJson[key]);
-                    }
-                }
-                err_1 ? callback(err_1, null) : callback(null, config);
-            });
-        }
-        else {
-            err_1 = new Error("no this config file: " + cfgPath_1);
-            callback(err_1, null);
-        }
+            }
+            for (var key in config) {
+                key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key]);
+                cmdObject.server && cmdObject.server !== true && (config.server = cmdObject.server);
+            }
+            err ? callback(err, null) : callback(null, config);
+        });
     }
     else {
-        callback(null, config);
+        for (var key in config) {
+            key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key]);
+            cmdObject.server && cmdObject.server !== true && (config.server = cmdObject.server);
+        }
+        err ? callback(err, null) : callback(null, config);
     }
 }
 exports.generateConfigJson = generateConfigJson;

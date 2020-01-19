@@ -7,11 +7,11 @@ var color_log_1 = require("./color_log");
 var parse_file_1 = require("./parse_file");
 var version = '0.0.1';
 var options = [
-    { flag: '-i, --input <file>', description: 'input file or directory, default will walk through current working directory' },
-    { flag: '-o, --output <path>', description: 'output file directory, default will create a "api_doc" folder in current working directory' },
-    { flag: '-c, --config <file>', description: 'the config.json file' },
-    { flag: '-s, --server [serveraddr]', description: 'static server host' },
-    { flag: '-p, --port <port>', description: 'static server port' }
+    { flag: '-i, --input <file>', description: 'input file or directory, must be specified' },
+    { flag: '-o, --output <path>', description: 'output api doc file directory, default will create a "api_doc" folder in current working directory' },
+    { flag: '-c, --config <file>', description: 'the config.json file, default will look for "easy.config.json" in current working directory' },
+    { flag: '-s, --server [serveraddr]', description: 'static server host, default will use "localhost"' },
+    { flag: '-p, --port <port>', description: 'static server port, default will use 9527' }
 ];
 var CMD = (function () {
     function CMD() {
@@ -31,12 +31,12 @@ var CMD = (function () {
                 process.exit(1);
             }
             else {
-                if (config.input) {
-                    config._startTime = Math.floor(new Date().getTime() / 1000);
-                    _this.startParseFile(config);
-                }
                 if (_this.commander.server || _this.commander.port) {
                     _this.startServer();
+                }
+                else {
+                    config._startTime = Math.floor(new Date().getTime() / 1000);
+                    _this.startParseFile(config);
                 }
             }
         });
@@ -47,6 +47,7 @@ var CMD = (function () {
             newParse.parseAllFile();
         }
         else {
+            this.commander.outputHelp();
             process.exit(1);
         }
     };

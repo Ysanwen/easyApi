@@ -61,6 +61,7 @@ export function writeJson (): void {
   commonJson.versionList = VersionList;
   // commonJson.groupList = GroupList;
   commonJson.docTitle = config.title;
+  commonJson.baseUrl = config.baseUrl;
   Object.assign(commonJson, Define);
   let outputPath = path.resolve(process.cwd(), config.output, 'data');
   fs.emptyDir(outputPath, (err: Error) => {
@@ -174,6 +175,8 @@ function doWriteJsonFile(pathStr: string, fileObject: any): void {
     if (totalOutPutFile <= 0) {
       let useTime = Math.floor(new Date().getTime() / 1000) - config._startTime || 0;
       successLog(`complete all the files, use time: ${useTime} seconds`);
+      let outputPath =  path.resolve(process.cwd(), config.output);
+      successLog(`write static files in "${outputPath}"`);
       infoLog('you can use "easyApi -s -o [public path]" to start a static server');
     }
   })

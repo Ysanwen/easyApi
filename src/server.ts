@@ -1,5 +1,7 @@
 import * as express from 'express';
 import * as path from 'path';
+import * as fs from "fs-extra";
+import * as proxy from 'http-proxy-middleware';
 import { ConfigObject, getConfig } from './generate_config';
 import { errorLog, successLog } from './color_log';
 
@@ -27,7 +29,9 @@ class Server {
     })
     // set static directory
     let staticPath = path.resolve(process.cwd(), this.config.output);
-    this.appServer.use(express.static(staticPath));
+    fs.existsSync(staticPath) && this.appServer.use(express.static(staticPath));
+    // set proxy if config file with proxy settings
+    this.setProxy();
     // set demo reponse
     this.appServer.use('*', (req, res) => {
       let randomNum = Math.floor(Math.random() * 1000);
@@ -35,9 +39,16 @@ class Server {
     })
   }
 
+  setProxy (): void{
+    let proxyObject = this.config.proxy || {};
+    for (let key in proxyObject) {
+      this.appServer.use(key, proxy(proxyObject[key]));
+    }
+  }
+
   startServer ():void {
-    let host = this.config.server;
-    let port = this.config.port;
+    let host = this.config.server || 'localhost';
+    let port = this.config.port || 9527;
     this.appServer.listen(port, host, (err) => {
       if (err) {
         errorLog(err.message)
