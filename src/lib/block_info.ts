@@ -24,6 +24,7 @@ export function getBlockInfo (tagInfoArray: TagInfo[]) {
     item.replaceWith && (infoDetail.replaceWith = item.replaceWith);
     item.valueType && (infoDetail.valueType = item.valueType);
     item.isRequired !== undefined && item.isRequired !== null && (infoDetail.isRequired = item.isRequired);
+    item.tryRequest === false && (infoDetail.tryRequest = item.tryRequest)
     item.responseType && (infoDetail.responseType = item.responseType);
     item.responseCode && (infoDetail.responseCode = item.responseCode);
     if (item.name === 'HeaderParam'
@@ -62,6 +63,7 @@ export function writeJson (): void {
   // commonJson.groupList = GroupList;
   commonJson.docTitle = config.title;
   commonJson.baseUrl = config.baseUrl;
+  (config.tryRequest === false) && (commonJson.tryRequest = false);
   Object.assign(commonJson, Define);
   let outputPath = path.resolve(process.cwd(), config.output, 'data');
   fs.emptyDir(outputPath, (err: Error) => {

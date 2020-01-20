@@ -18,7 +18,8 @@ interface CallbackFunction {
  * baseUrl: the host of api request  
  * config: the config json file path  
  * server: static web server host  
- * port: static web server port  
+ * port: static web server port
+ * tryRequest: whether can send request in document default is true
  */
 export interface ConfigObject {
   version: string;
@@ -90,7 +91,7 @@ export function generateConfigJson (cmdObject: Command, callback: CallbackFuncti
         err = new Error(`some error with config file: ${cfgPath} ${error.message}`);
       } else {
         for (let key in configJson) {
-          configJson[key] && (config[key] = configJson[key]);
+          configJson[key] !== '' && (config[key] = configJson[key]);
         }
       }
       for (let key in config) {

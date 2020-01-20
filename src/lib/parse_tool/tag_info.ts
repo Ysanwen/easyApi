@@ -11,6 +11,7 @@
  * @param {string} key for key of tag
  * @param {string} valueType value type of tag
  * @param {boolean} isRequired the value is required or not
+ * @param {boolean} tryRequest whether can send request in document default is true
  * @param {boolean} responseType response type default is application/json
  * @param {number} responseCode response code
  * @param {Error} error the error
@@ -24,6 +25,7 @@ interface TagInfo {
   key?: string;
   valueType?: string;
   isRequired?: boolean;
+  tryRequest?: boolean;
   responseType?: string;
   responseCode?: number;
   appendDescription?(content: string): void;
@@ -41,4 +43,5 @@ export * from './name';
 export * from './param';
 export * from './response';
 export * from './reuse';
+export * from './try_request';
 export * from './version';

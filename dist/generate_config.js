@@ -53,7 +53,7 @@ function generateConfigJson(cmdObject, callback) {
             }
             else {
                 for (var key in configJson) {
-                    configJson[key] && (config[key] = configJson[key]);
+                    configJson[key] !== '' && (config[key] = configJson[key]);
                 }
             }
             for (var key in config) {

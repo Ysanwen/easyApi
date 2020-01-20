@@ -11,10 +11,11 @@ class Deprecated implements TagInfo {
     let hasReplace = content.match(/\(\s*ReplaceWith.*\)/)
     if (hasReplace) {
       let replace = hasReplace[0]
-      this.description = content.replace(replace, '')
-      this.replaceWith = replace.replace(/\(|(ReplaceWith)|:|\)|\s/g,'')
+      this.replaceWith = replace.replace(/\(|(ReplaceWith)|:|\)|\s/g,'');
+      this.description = content.replace(replace, `(${this.replaceWith})`);
     } else {
       this.description = content;
+      this.replaceWith = '';
     }
   }
 
