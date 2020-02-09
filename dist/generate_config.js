@@ -9,7 +9,7 @@ var config = {
     input: '',
     output: './api_doc',
     baseUrl: '',
-    config: './easy.config.json',
+    config: './easy.config.js',
     server: '',
     port: ''
 };
@@ -43,18 +43,17 @@ function generateConfigJson(cmdObject, callback) {
             callback(new Error("no this config file: " + configFile), null);
             return;
         }
+        if (!(/\.js$/).test(cfgPath)) {
+            callback(new Error("the config file must be a JavaScript file: " + configFile), null);
+            return;
+        }
     }
     cfgPath = cfgPath || path.resolve(process.cwd(), config.config);
     var err = null;
     if (fs.existsSync(cfgPath)) {
-        fs.readJSON(cfgPath, function (error, configJson) {
-            if (error) {
-                err = new Error("some error with config file: " + cfgPath + " " + error.message);
-            }
-            else {
-                for (var key in configJson) {
-                    configJson[key] !== '' && (config[key] = configJson[key]);
-                }
+        Promise.resolve().then(function () { return require(cfgPath); }).then(function (configObj) {
+            for (var key in configObj) {
+                configObj[key] !== '' && (config[key] = configObj[key]);
             }
             for (var key in config) {
                 key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key]);

@@ -39,7 +39,7 @@ const config: ConfigObject = {
   input: '',
   output: './api_doc',
   baseUrl: '',
-  config: './easy.config.json',
+  config: './easy.config.js',
   server: '',
   port: ''
 }
@@ -82,17 +82,17 @@ export function generateConfigJson (cmdObject: Command, callback: CallbackFuncti
       callback(new Error(`no this config file: ${configFile}`), null);
       return;   
     }
+    if (!(/\.js$/).test(cfgPath)) {
+      callback(new Error(`the config file must be a JavaScript file: ${configFile}`), null);
+      return;
+    }
   }
   cfgPath = cfgPath || path.resolve(process.cwd(), config.config);
   let err: Error = null;
   if (fs.existsSync(cfgPath)) {
-    fs.readJSON(cfgPath, function (error, configJson) {
-      if (error) {
-        err = new Error(`some error with config file: ${cfgPath} ${error.message}`);
-      } else {
-        for (let key in configJson) {
-          configJson[key] !== '' && (config[key] = configJson[key]);
-        }
+    import(cfgPath).then((configObj) => {
+      for (let key in configObj) {
+        configObj[key] !== '' && (config[key] = configObj[key]);
       }
       for (let key in config) {
         key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key])
@@ -100,6 +100,21 @@ export function generateConfigJson (cmdObject: Command, callback: CallbackFuncti
       }
       err ? callback(err, null) : callback(null, config);
     })
+
+    // fs.readJSON(cfgPath, function (error, configJson) {
+    //   if (error) {
+    //     err = new Error(`some error with config file: ${cfgPath} ${error.message}`);
+    //   } else {
+    //     for (let key in configJson) {
+    //       configJson[key] !== '' && (config[key] = configJson[key]);
+    //     }
+    //   }
+    //   for (let key in config) {
+    //     key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key])
+    //     cmdObject.server && cmdObject.server !== true && (config.server = cmdObject.server)
+    //   }
+    //   err ? callback(err, null) : callback(null, config);
+    // })
   } else {
     for (let key in config) {
       key !== 'version' && key !== 'server' && cmdObject[key] && (config[key] = cmdObject[key])

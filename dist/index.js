@@ -9,7 +9,7 @@ var version = '0.0.1';
 var options = [
     { flag: '-i, --input <file>', description: 'input file or directory, must be specified' },
     { flag: '-o, --output <path>', description: 'output api doc file directory, default will create a "api_doc" folder in current working directory' },
-    { flag: '-c, --config <file>', description: 'the config.json file, default will look for "easy.config.json" in current working directory' },
+    { flag: '-c, --config <file>', description: 'the config.js file, default will look for "easy.config.js" in current working directory' },
     { flag: '-s, --server [serveraddr]', description: 'static server host, default will use "localhost"' },
     { flag: '-p, --port <port>', description: 'static server port, default will use 9527' }
 ];
