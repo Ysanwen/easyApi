@@ -8,6 +8,7 @@ var VersionList = [];
 var GroupList = [];
 var BlockInfoList = [];
 var Define = {};
+var Model = {};
 var config = generate_config_1.getConfig();
 function getBlockInfo(tagInfoArray) {
     var info = {};
@@ -29,7 +30,8 @@ function getBlockInfo(tagInfoArray) {
             || item.name === 'QueryParam'
             || item.name === 'BodyParam'
             || item.name === 'SuccessResponse'
-            || item.name === 'ErrorResponse') {
+            || item.name === 'ErrorResponse'
+            || item.name === 'Property') {
             info[item.name] = info[item.name] || [];
             info[item.name].push(infoDetail);
         }
@@ -44,11 +46,15 @@ function updateVersionAndGroup(blockInfo) {
     var version = blockInfo.Version && blockInfo.Version.key ? blockInfo.Version.key : config.version;
     var group = blockInfo.Group && blockInfo.Group.key ? blockInfo.Group.key : '';
     var defineName = blockInfo.Define && blockInfo.Define.key ? blockInfo.Define.key : '';
+    var modelName = blockInfo.Model && blockInfo.Model.key ? blockInfo.Model.key : '';
     version && (VersionList.indexOf(version) < 0) && VersionList.push(version);
     group && (GroupList.indexOf(group) < 0) && GroupList.push(group);
     if (defineName) {
         delete blockInfo.Reuse;
         Define[defineName] = blockInfo;
+    }
+    else if (modelName) {
+        Model[modelName] = blockInfo;
     }
     else {
         BlockInfoList.push(blockInfo);
@@ -60,7 +66,7 @@ function writeJson() {
     commonJson.docTitle = config.title;
     commonJson.baseUrl = config.baseUrl;
     (config.tryRequest === false) && (commonJson.tryRequest = false);
-    Object.assign(commonJson, Define);
+    Object.assign(commonJson, Model);
     var outputPath = path.resolve(process.cwd(), config.output, 'data');
     fs.emptyDir(outputPath, function (err) {
         if (err) {

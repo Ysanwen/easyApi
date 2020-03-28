@@ -45,3 +45,4 @@ export * from './response';
 export * from './reuse';
 export * from './try_request';
 export * from './version';
+export * from './model';

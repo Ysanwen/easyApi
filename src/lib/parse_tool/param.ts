@@ -1,6 +1,12 @@
 import TagInfo from './tag_info';
 
-const EffectiveValueType: string[] = ['string', 'number', 'boolean', 'array', 'object', 'null', 'date'];
+// in javascript number type conains: integer、float
+// date type conains: datetime
+
+const EffectiveValueType: string[] = [
+  'string', 'number', 'integer', 'float', 'boolean', 'array', 'object', 'null', 'date', 'datetime',
+  'string[]', 'number[]', 'integer[]', 'float[]', 'boolean[]', 'array[]', 'object[]', 'null[]', 'date[]', 'datetime[]'
+];
 
 class Param implements TagInfo {
 
@@ -14,9 +20,10 @@ class Param implements TagInfo {
   constructor (content: string) {
     let matchValue = content.match(/\{.*\}\s*/);
     if (matchValue) {
-      let value = matchValue[0].replace(/\{|\}|\s/g, '').toLocaleLowerCase();
-      if (EffectiveValueType.indexOf(value) >= 0) {
-        this.valueType = value;
+      let value = matchValue[0].replace(/\{|\}|\s/g, '');
+      let valueType = value.toLocaleLowerCase();
+      if (EffectiveValueType.indexOf(valueType) >= 0 || valueType.indexOf('$ref') >= 0) {
+        this.valueType = valueType.indexOf('$ref') >= 0 ? value : valueType;
         let restStr = content.replace(matchValue[0], '');
         let paramsKeyMatch = restStr.match(/^\S+\s*/);
         if (paramsKeyMatch) {
@@ -83,4 +90,14 @@ class BodyParam extends Param {
 
 }
 
-export { UrlParam, HeaderParam, QueryParam, BodyParam }
+class Property extends Param {
+
+  name: string = 'Property';
+
+  constructor (content: string) {
+    super(content);
+  }
+
+}
+
+export { UrlParam, HeaderParam, QueryParam, BodyParam, Property }

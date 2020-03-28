@@ -15,3 +15,4 @@ __export(require("./response"));
 __export(require("./reuse"));
 __export(require("./try_request"));
 __export(require("./version"));
+__export(require("./model"));

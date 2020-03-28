@@ -13,7 +13,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var EffectiveValueType = ['string', 'number', 'boolean', 'array', 'object', 'null', 'date'];
+var EffectiveValueType = [
+    'string', 'number', 'integer', 'float', 'boolean', 'array', 'object', 'null', 'date', 'datetime',
+    'string[]', 'number[]', 'integer[]', 'float[]', 'boolean[]', 'array[]', 'object[]', 'null[]', 'date[]', 'datetime[]'
+];
 var Param = (function () {
     function Param(content) {
         this.name = 'Param';
@@ -21,9 +24,10 @@ var Param = (function () {
         this.error = null;
         var matchValue = content.match(/\{.*\}\s*/);
         if (matchValue) {
-            var value = matchValue[0].replace(/\{|\}|\s/g, '').toLocaleLowerCase();
-            if (EffectiveValueType.indexOf(value) >= 0) {
-                this.valueType = value;
+            var value = matchValue[0].replace(/\{|\}|\s/g, '');
+            var valueType = value.toLocaleLowerCase();
+            if (EffectiveValueType.indexOf(valueType) >= 0 || valueType.indexOf('$ref') >= 0) {
+                this.valueType = valueType.indexOf('$ref') >= 0 ? value : valueType;
                 var restStr = content.replace(matchValue[0], '');
                 var paramsKeyMatch = restStr.match(/^\S+\s*/);
                 if (paramsKeyMatch) {
@@ -91,3 +95,13 @@ var BodyParam = (function (_super) {
     return BodyParam;
 }(Param));
 exports.BodyParam = BodyParam;
+var Property = (function (_super) {
+    __extends(Property, _super);
+    function Property(content) {
+        var _this = _super.call(this, content) || this;
+        _this.name = 'Property';
+        return _this;
+    }
+    return Property;
+}(Param));
+exports.Property = Property;

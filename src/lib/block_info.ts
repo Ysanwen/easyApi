@@ -9,6 +9,7 @@ const VersionList: string[] = [];
 const GroupList: string[] = [];
 const BlockInfoList: any = [];
 const Define: any = {};
+const Model: any = {};
 
 let config: ConfigObject = getConfig();
 
@@ -32,7 +33,8 @@ export function getBlockInfo (tagInfoArray: TagInfo[]) {
       || item.name === 'QueryParam'
       || item.name === 'BodyParam'
       || item.name === 'SuccessResponse'
-      || item.name === 'ErrorResponse') {
+      || item.name === 'ErrorResponse'
+      || item.name === 'Property') {
       info[item.name] = info[item.name] || [];
       info[item.name].push(infoDetail);
     } else {
@@ -46,12 +48,15 @@ function updateVersionAndGroup (blockInfo: any) {
   let version = blockInfo.Version && blockInfo.Version.key ? blockInfo.Version.key : config.version;
   let group = blockInfo.Group && blockInfo.Group.key ? blockInfo.Group.key : '';
   let defineName = blockInfo.Define && blockInfo.Define.key ? blockInfo.Define.key : '';
+  let modelName = blockInfo.Model && blockInfo.Model.key ? blockInfo.Model.key : '';
   version && (VersionList.indexOf(version) < 0) && VersionList.push(version);
   group && (GroupList.indexOf(group) < 0) && GroupList.push(group);
   if (defineName) {
     delete blockInfo.Reuse;
     Define[defineName] = blockInfo;
-  } else {
+  } else if (modelName) {
+    Model[modelName] = blockInfo;
+  }  else {
     BlockInfoList.push(blockInfo);
   }
 }
@@ -64,7 +69,8 @@ export function writeJson (): void {
   commonJson.docTitle = config.title;
   commonJson.baseUrl = config.baseUrl;
   (config.tryRequest === false) && (commonJson.tryRequest = false);
-  Object.assign(commonJson, Define);
+  Object.assign(commonJson, Model);
+  // Object.assign(commonJson, Define, Model);
   let outputPath = path.resolve(process.cwd(), config.output, 'data');
   fs.emptyDir(outputPath, (err: Error) => {
     if (err) {
