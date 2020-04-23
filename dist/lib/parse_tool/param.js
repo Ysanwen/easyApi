@@ -14,8 +14,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var EffectiveValueType = [
-    'string', 'number', 'integer', 'float', 'boolean', 'array', 'object', 'null', 'date', 'datetime',
-    'string[]', 'number[]', 'integer[]', 'float[]', 'boolean[]', 'array[]', 'object[]', 'null[]', 'date[]', 'datetime[]'
+    'string', 'number', 'integer', 'float', 'boolean', 'array', 'object', 'null', 'date', 'datetime', 'file',
+    'string[]', 'number[]', 'integer[]', 'float[]', 'boolean[]', 'array[]', 'object[]', 'null[]', 'date[]', 'datetime[]', 'file[]'
 ];
 var Param = (function () {
     function Param(content) {
@@ -26,8 +26,8 @@ var Param = (function () {
         if (matchValue) {
             var value = matchValue[0].replace(/\{|\}|\s/g, '');
             var valueType = value.toLocaleLowerCase();
-            if (EffectiveValueType.indexOf(valueType) >= 0 || valueType.indexOf('$ref') >= 0) {
-                this.valueType = valueType.indexOf('$ref') >= 0 ? value : valueType;
+            if (EffectiveValueType.indexOf(valueType) >= 0 || valueType.indexOf('&') >= 0) {
+                this.valueType = valueType.indexOf('&') >= 0 ? this.extraRefReplaceKey(value) : valueType;
                 var restStr = content.replace(matchValue[0], '');
                 var paramsKeyMatch = restStr.match(/^\S+\s*/);
                 if (paramsKeyMatch) {
@@ -52,6 +52,27 @@ var Param = (function () {
     }
     Param.prototype.appendDescription = function (content) {
         this.description += content;
+    };
+    Param.prototype.extraRefReplaceKey = function (refString) {
+        var valueType = '';
+        var matchReplaceKey = refString.match(/\(.*\)/g);
+        if (matchReplaceKey) {
+            valueType = refString.replace(matchReplaceKey[0], '');
+            var replaceKeyStr = matchReplaceKey[0].replace(/\(|\)|\s/g, '');
+            var replaceKeyArr = replaceKeyStr.split(',');
+            for (var _i = 0, replaceKeyArr_1 = replaceKeyArr; _i < replaceKeyArr_1.length; _i++) {
+                var item = replaceKeyArr_1[_i];
+                if (item.indexOf(':&') >= 0) {
+                    var splitItem = item.split(':');
+                    this.refReplace = this.refReplace || {};
+                    this.refReplace[splitItem[0]] = splitItem[1];
+                }
+            }
+        }
+        else {
+            valueType = refString;
+        }
+        return valueType;
     };
     return Param;
 }());

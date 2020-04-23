@@ -4,8 +4,8 @@ import TagInfo from './tag_info';
 // date type conains: datetime
 
 const EffectiveValueType: string[] = [
-  'string', 'number', 'integer', 'float', 'boolean', 'array', 'object', 'null', 'date', 'datetime',
-  'string[]', 'number[]', 'integer[]', 'float[]', 'boolean[]', 'array[]', 'object[]', 'null[]', 'date[]', 'datetime[]'
+  'string', 'number', 'integer', 'float', 'boolean', 'array', 'object', 'null', 'date', 'datetime', 'file',
+  'string[]', 'number[]', 'integer[]', 'float[]', 'boolean[]', 'array[]', 'object[]', 'null[]', 'date[]', 'datetime[]', 'file[]'
 ];
 
 class Param implements TagInfo {
@@ -13,6 +13,7 @@ class Param implements TagInfo {
   name: string = 'Param';
   key: string;
   valueType: string;
+  refReplace: any;
   description: string;
   isRequired: boolean = true;
   error: Error = null;
@@ -22,8 +23,8 @@ class Param implements TagInfo {
     if (matchValue) {
       let value = matchValue[0].replace(/\{|\}|\s/g, '');
       let valueType = value.toLocaleLowerCase();
-      if (EffectiveValueType.indexOf(valueType) >= 0 || valueType.indexOf('$ref') >= 0) {
-        this.valueType = valueType.indexOf('$ref') >= 0 ? value : valueType;
+      if (EffectiveValueType.indexOf(valueType) >= 0 || valueType.indexOf('&') >= 0) {
+        this.valueType = valueType.indexOf('&') >= 0 ? this.extraRefReplaceKey(value) : valueType;
         let restStr = content.replace(matchValue[0], '');
         let paramsKeyMatch = restStr.match(/^\S+\s*/);
         if (paramsKeyMatch) {
@@ -47,6 +48,26 @@ class Param implements TagInfo {
 
   appendDescription (content: string) :void {
     this.description += content;
+  }
+
+  extraRefReplaceKey (refString: string): string {
+    let valueType = '';
+    let matchReplaceKey = refString.match(/\(.*\)/g);
+    if (matchReplaceKey) {
+      valueType = refString.replace(matchReplaceKey[0], '');
+      let replaceKeyStr = matchReplaceKey[0].replace(/\(|\)|\s/g, '');
+      let replaceKeyArr = replaceKeyStr.split(',');
+      for (let item of replaceKeyArr) {
+        if (item.indexOf(':&') >= 0) {
+          let splitItem = item.split(':');
+          this.refReplace = this.refReplace || {};
+          this.refReplace[splitItem[0]] = splitItem[1];
+        }
+      }
+    } else {
+      valueType = refString;
+    }
+    return valueType;
   }
 
 }

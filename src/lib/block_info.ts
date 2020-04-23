@@ -28,6 +28,7 @@ export function getBlockInfo (tagInfoArray: TagInfo[]) {
     item.tryRequest === false && (infoDetail.tryRequest = item.tryRequest)
     item.responseType && (infoDetail.responseType = item.responseType);
     item.responseCode && (infoDetail.responseCode = item.responseCode);
+    item.refReplace && (infoDetail.refReplace = item.refReplace);
     if (item.name === 'HeaderParam'
       || item.name === 'UrlParam'
       || item.name === 'QueryParam'

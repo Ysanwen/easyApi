@@ -9,6 +9,8 @@ class Response implements TagInfo {
   description: string;
   responseType: string;
   responseCode: number;
+  valueType: string = '';
+  refReplace: any;
   error: Error = null;
 
   constructor (content: string) {
@@ -24,16 +26,47 @@ class Response implements TagInfo {
     }
 
     let restArr = splitStr(rest);
+    let description = '';
     if (/^\d+$/.test(restArr[0])) {
       this.responseCode = parseInt(restArr[0]);
-      this.description = restArr[1];
+      description = restArr[1].replace(/(^\s*)|(\s*$)/g, '');
     } else {
-      this.description = rest;
+      description = rest.replace(/(^\s*)|(\s*$)/g, '');
+    }
+    // ref handle
+    let testMatch = description.match(/\{\s*\&.*?\}/g);
+    if (testMatch) {
+      let valueType = testMatch[0];
+      this.description = description.replace(valueType, '');
+      valueType = valueType.replace(/\{|\}|\s/g, '');
+      this.valueType = this.extraRefReplaceKey(valueType);
+    } else {
+      this.description = description;
     }
   }
 
   appendDescription (content: string) :void {
-    this.description += content;
+    this.description += content.replace(/(^\s*)|(\s*$)/g, '');
+  }
+
+  extraRefReplaceKey (refString: string): string {
+    let valueType = '';
+    let matchReplaceKey = refString.match(/\(.*\)/g);
+    if (matchReplaceKey) {
+      valueType = refString.replace(matchReplaceKey[0], '');
+      let replaceKeyStr = matchReplaceKey[0].replace(/\(|\)|\s/g, '');
+      let replaceKeyArr = replaceKeyStr.split(',');
+      for (let item of replaceKeyArr) {
+        if (item.indexOf(':&') >= 0) {
+          let splitItem = item.split(':');
+          this.refReplace = this.refReplace || {};
+          this.refReplace[splitItem[0]] = splitItem[1];
+        }
+      }
+    } else {
+      valueType = refString;
+    }
+    return valueType;
   }
 }
 

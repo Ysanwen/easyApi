@@ -18,6 +18,7 @@ var contentTypeReg = /(audio)|(application)|(video)|(image)|(text)|(font)\//;
 var Response = (function () {
     function Response(content) {
         this.name = 'Response';
+        this.valueType = '';
         this.error = null;
         var splitArr = split_str_1.default(content);
         var responseType = splitArr[0];
@@ -31,16 +32,48 @@ var Response = (function () {
             rest = content;
         }
         var restArr = split_str_1.default(rest);
+        var description = '';
         if (/^\d+$/.test(restArr[0])) {
             this.responseCode = parseInt(restArr[0]);
-            this.description = restArr[1];
+            description = restArr[1].replace(/(^\s*)|(\s*$)/g, '');
         }
         else {
-            this.description = rest;
+            description = rest.replace(/(^\s*)|(\s*$)/g, '');
+        }
+        var testMatch = description.match(/\{\s*\&.*?\}/g);
+        if (testMatch) {
+            var valueType = testMatch[0];
+            this.description = description.replace(valueType, '');
+            valueType = valueType.replace(/\{|\}|\s/g, '');
+            this.valueType = this.extraRefReplaceKey(valueType);
+        }
+        else {
+            this.description = description;
         }
     }
     Response.prototype.appendDescription = function (content) {
-        this.description += content;
+        this.description += content.replace(/(^\s*)|(\s*$)/g, '');
+    };
+    Response.prototype.extraRefReplaceKey = function (refString) {
+        var valueType = '';
+        var matchReplaceKey = refString.match(/\(.*\)/g);
+        if (matchReplaceKey) {
+            valueType = refString.replace(matchReplaceKey[0], '');
+            var replaceKeyStr = matchReplaceKey[0].replace(/\(|\)|\s/g, '');
+            var replaceKeyArr = replaceKeyStr.split(',');
+            for (var _i = 0, replaceKeyArr_1 = replaceKeyArr; _i < replaceKeyArr_1.length; _i++) {
+                var item = replaceKeyArr_1[_i];
+                if (item.indexOf(':&') >= 0) {
+                    var splitItem = item.split(':');
+                    this.refReplace = this.refReplace || {};
+                    this.refReplace[splitItem[0]] = splitItem[1];
+                }
+            }
+        }
+        else {
+            valueType = refString;
+        }
+        return valueType;
     };
     return Response;
 }());

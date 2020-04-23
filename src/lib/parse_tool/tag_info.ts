@@ -28,6 +28,7 @@ interface TagInfo {
   tryRequest?: boolean;
   responseType?: string;
   responseCode?: number;
+  refReplace?: any;
   appendDescription?(content: string): void;
   error?: Error;
 }
