@@ -2,7 +2,7 @@
 import TagInfo from './tag_info';
 import splitStr from './split_str';
 
-const EffectiveMethods: string[] = ['get', 'post', 'put', 'delete'];
+const EffectiveMethods: string[] = ['get', 'post', 'put', 'delete', 'patch'];
 
 class Api implements TagInfo {
   name: string = 'Api';

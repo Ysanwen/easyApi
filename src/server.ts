@@ -19,7 +19,7 @@ class Server {
     this.appServer.all('*', (req, res, next) => {
       res.header('Access-Control-Allow-Origin', '*');
       res.header('Access-Control-Allow-Headers', '*');
-      res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+      res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS, PATCH');
       res.header('Access-Control-Expose-Headers', '*');
       if (req.method === 'options' || req.method === 'OPTIONS') {
         res.end()

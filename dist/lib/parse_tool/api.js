@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var split_str_1 = require("./split_str");
-var EffectiveMethods = ['get', 'post', 'put', 'delete'];
+var EffectiveMethods = ['get', 'post', 'put', 'delete', 'patch'];
 var Api = (function () {
     function Api(content) {
         this.name = 'Api';
