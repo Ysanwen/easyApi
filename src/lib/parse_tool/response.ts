@@ -46,7 +46,7 @@ class Response implements TagInfo {
   }
 
   appendDescription (content: string) :void {
-    this.description += content.replace(/(^\s*)|(\s*$)/g, '');
+    this.description += `${this.description ? '\n' : ''}${content.replace(/(^\s*)|(\s*$)/g, '')}`;
   }
 
   extraRefReplaceKey (refString: string): string {

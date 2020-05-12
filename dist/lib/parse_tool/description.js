@@ -7,7 +7,7 @@ var Description = (function () {
         this.description = content.replace(/^\s+|\s+$/g, '');
     }
     Description.prototype.appendDescription = function (content) {
-        this.description += content;
+        this.description += (this.description ? '\n' : '') + "content";
     };
     return Description;
 }());

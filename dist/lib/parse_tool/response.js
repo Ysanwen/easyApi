@@ -52,7 +52,7 @@ var Response = (function () {
         }
     }
     Response.prototype.appendDescription = function (content) {
-        this.description += content.replace(/(^\s*)|(\s*$)/g, '');
+        this.description += "" + (this.description ? '\n' : '') + content.replace(/(^\s*)|(\s*$)/g, '');
     };
     Response.prototype.extraRefReplaceKey = function (refString) {
         var valueType = '';

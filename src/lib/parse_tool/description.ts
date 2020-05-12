@@ -11,7 +11,7 @@ class Description implements TagInfo {
   }
 
   appendDescription (content: string) :void {
-    this.description += content;
+    this.description += `${this.description ? '\n' : ''}content`;
   }
 
 }
