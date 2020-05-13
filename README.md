@@ -5,7 +5,7 @@ eazyApi是通过注释生成api文档的命令行工具，基于nodejs开发。�
 通过npm 安装
 
 ```
-npm install https://github.com/Ysanwen/easyApi.git#master -g
+npm install https://github.com/Ysanwen/easyApi.git#dev -g
 ```
 
 安装成功后，通过命令行参数-V查看版本:
@@ -15,7 +15,7 @@ easyApi -v
 # 0.0.1
 ```
 
-出现版本号，表示已安装成功。[具体使用，请参考](./docs/index.html)
+出现版本号，表示已安装成功。[具体使用，请参考](https://ysanwen.github.io/easyApi/index.html)
 
 
 ### License (MIT)
