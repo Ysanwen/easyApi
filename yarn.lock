@@ -408,7 +408,7 @@ json5@^1.0.1:
   resolved "https://registry.npm.taobao.org/json5/download/json5-1.0.1.tgz#779fb0018604fa854eacbf6252180d83543e3dbe"
   integrity sha1-d5+wAYYE+oVOrL9iUhgNg1Q+Pb4=
   dependencies:
-    minimist "^1.2.0"
+    minimist "^1.2.3"
 
 jsonfile@^4.0.0:
   version "4.0.0"
