@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.apiEnd = exports.apiStart = exports.parseLine = exports.trimLine = void 0;
 var regex_config_1 = require("../regex_config");
 var EffectiveTags = require("./parse_tool/tag_info");
 var symbol = '@';

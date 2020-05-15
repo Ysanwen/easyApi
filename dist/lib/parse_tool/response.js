@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ErrorResponse = exports.SuccessResponse = void 0;
 var split_str_1 = require("./split_str");
 var contentTypeReg = /(audio)|(application)|(video)|(image)|(text)|(font)\//;
 var Response = (function () {

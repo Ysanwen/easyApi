@@ -20,39 +20,39 @@ interface RegexConfig {
 
 const regexConfig: RegexConfig = {
   "javascript": {
-    prefixRegex: /^[\/\*\s]*\s*/g,
+    prefixRegex: /^\/\/\s*|^\/\*\s*|^\*\s*/g,
     suffixRegex: /\s*\*\/\s*$/g,
-    fileSuffix: ['js', 'ts', 'javascript'],
+    fileSuffix: ['.js', '.ts', '.javascript'],
   },
   "java": {
-    prefixRegex: /^[\/\*\s]*\s*/g,
+    prefixRegex: /^\/\/\s*|^\/\*\s*|^\*\s*/g,
     suffixRegex: /\s*\*\/\s*$/g,
-    fileSuffix: ['java'],
+    fileSuffix: ['.java'],
   },
   "c": {
-    prefixRegex: /^[\/\*\s]*\s*/g,
+    prefixRegex: /^\/\/\s*|^\/\*\s*|^\*\s*/g,
     suffixRegex: /\s*\*\/\s*$/g,
-    fileSuffix: ['c', 'cpp', 'cs'],
+    fileSuffix: ['.c', '.cpp', '.cs'],
   },
   "php": {
-    prefixRegex: /^[\/\*\s]*\s*/g,
+    prefixRegex: /^\/\/\s*|^\/\*\s*|^\*\s*/g,
     suffixRegex: /\s*\*\/\s*$/g,
-    fileSuffix: ['php'],
+    fileSuffix: ['.php'],
   },
   "swift": {
-    prefixRegex: /^[\/\*\s]*\s*/g,
+    prefixRegex: /^\/\/\s*|^\/\*\s*|^\*\s*/g,
     suffixRegex: /\s*\*\/\s*$/g,
-    fileSuffix: ['swift'],
+    fileSuffix: ['.swift'],
   },
   "go": {
-    prefixRegex: /^[\/\*\s]*\s*/g,
+    prefixRegex: /^\/\/\s*|^\/\*\s*|^\*\s*/g,
     suffixRegex: /\s*\*\/\s*$/g,
-    fileSuffix: ['go'],
+    fileSuffix: ['.go'],
   },
   "python": {
-    prefixRegex: /^[#(""")(''')\*\s]*\s*/g,
-    suffixRegex: /\s*[(""")(''')]\s*$/g,
-    fileSuffix: ['py'],
+    prefixRegex: /^#\s*|^\"{3}\s*|^\'{3}\s*/g,
+    suffixRegex: /\"{3}\s*$|\'{3}\s*$/g,
+    fileSuffix: ['.py'],
   }
 }
 export default regexConfig;

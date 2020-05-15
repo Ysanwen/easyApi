@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Property = exports.BodyParam = exports.QueryParam = exports.HeaderParam = exports.UrlParam = void 0;
 var EffectiveValueType = [
     'string', 'number', 'integer', 'float', 'boolean', 'array', 'object', 'null', 'date', 'datetime', 'file',
     'string[]', 'number[]', 'integer[]', 'float[]', 'boolean[]', 'array[]', 'object[]', 'null[]', 'date[]', 'datetime[]', 'file[]'
