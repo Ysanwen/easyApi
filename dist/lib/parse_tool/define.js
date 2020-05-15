@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Define = void 0;
 var split_str_1 = require("./split_str");
 var Define = (function () {
     function Define(content) {

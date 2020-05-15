@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Description = void 0;
 var Description = (function () {
     function Description(content) {
         this.name = 'Description';
@@ -7,7 +8,7 @@ var Description = (function () {
         this.description = content.replace(/^\s+|\s+$/g, '');
     }
     Description.prototype.appendDescription = function (content) {
-        this.description += (this.description ? '\n' : '') + "content";
+        this.description += "" + (this.description ? '\n' : '') + content;
     };
     return Description;
 }());

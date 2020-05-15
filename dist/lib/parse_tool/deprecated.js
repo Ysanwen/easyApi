@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Deprecated = void 0;
 var Deprecated = (function () {
     function Deprecated(content) {
         this.name = 'Deprecated';

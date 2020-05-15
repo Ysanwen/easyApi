@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.writeJson = exports.getBlockInfo = void 0;
 var generate_config_1 = require("../generate_config");
 var fs = require("fs-extra");
 var path = require("path");
@@ -145,10 +146,10 @@ function writeGroupJson(outputPath, BlockInfoList) {
         var version = getVersion(block);
         versionObj[version] = versionObj[version] || {};
         var blockJson = versionObj[version];
-        var name_1 = block.Name.key;
+        var name_1 = block.Name ? block.Name.key : '';
         var group = getGroup(block);
         blockJson[group] = blockJson[group] || {};
-        blockJson[group][name_1] = block;
+        name_1 && (blockJson[group][name_1] = block);
     }
     for (var version in versionObj) {
         var blockJson = versionObj[version];

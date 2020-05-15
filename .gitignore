@@ -1,4 +1,5 @@
 node_modules/
 demo/
 api_doc/
+.vscode/
 easy.config.js

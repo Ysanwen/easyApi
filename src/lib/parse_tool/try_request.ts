@@ -15,11 +15,6 @@ class TryRequest implements TagInfo {
       this.tryRequest = true;
     }
   }
-
-  appendDescription (content: string) :void {
-    this.description += content;
-  }
-
 }
 
 export { TryRequest };

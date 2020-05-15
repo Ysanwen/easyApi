@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CMD = void 0;
 var commander_1 = require("commander");
 var server_1 = require("./server");
 var generate_config_1 = require("./generate_config");

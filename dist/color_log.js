@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.infoLog = exports.successLog = exports.warnLog = exports.errorLog = void 0;
 var chalk = require("chalk");
 function errorLog(msg) {
     console.log(chalk.bold.redBright(msg));

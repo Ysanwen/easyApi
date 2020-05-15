@@ -147,10 +147,10 @@ function writeGroupJson (outputPath:string, BlockInfoList: any):void {
     let version = getVersion(block);
     versionObj[version] = versionObj[version] || {};
     let blockJson:any = versionObj[version];
-    let name = block.Name.key;
+    let name = block.Name ? block.Name.key : '';
     let group = getGroup(block);
     blockJson[group] = blockJson[group] || {};
-    blockJson[group][name] = block;
+    name && (blockJson[group][name] = block);
   }
   for (let version in versionObj) {
     let blockJson = versionObj[version];

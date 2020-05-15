@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ContentType = void 0;
 var split_str_1 = require("./split_str");
 var EffectiveContentType = ['application/x-www-form-urlencoded', 'multipart/form-data', 'application/json', 'text/plain'];
 var ContentType = (function () {

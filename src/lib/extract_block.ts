@@ -8,6 +8,7 @@ import guessFileType from './guess_file_type';
 import * as handleTags from './handle_tags';
 import TagInfo from './parse_tool/tag_info';
 import { getBlockInfo } from './block_info';
+import regexConfig from '../regex_config';
 
 interface LineInfo {
   content: string;
@@ -21,6 +22,7 @@ class ExtractBlock {
   fileType: string;
   fileName: string;
   lineNumber: number = 0;
+  annotationStart: boolean = false;
 
   constructor (inputFile: string) {
     this.inputFile = inputFile;
@@ -37,7 +39,7 @@ class ExtractBlock {
     
     rl.on('line', (line) => {
       this.lineNumber += 1;
-      this.getLine(line);
+      this.getEffectiveAnnotation(line);
     });
 
     rl.on('close', () => {
@@ -45,12 +47,41 @@ class ExtractBlock {
     })
   }
 
+  getEffectiveAnnotation (line: string): void {
+    let fileType = this.fileType;
+    line = line.replace(/^\s*|\s*$/g, '');
+    let matchStart = line.match(regexConfig[fileType].prefixRegex);
+    let matchEnd = line.match(regexConfig[fileType].suffixRegex);
+    if (fileType !== 'python') {
+      (matchStart || matchEnd) && this.getLine(line);
+    } else {
+      if (line.indexOf('#') === 0) {
+        this.getLine(line);
+      } else {
+        if (matchStart && !matchEnd) {
+          this.annotationStart = true;
+          this.getLine(line);
+        } else if (!matchStart && matchEnd) {
+          this.annotationStart = false;
+          this.getLine(line);
+        } else if (matchStart && matchEnd) {
+          if (line.replace(matchStart[0], '').length === 0) {
+            this.annotationStart = !this.annotationStart;
+          }
+          this.getLine(line);
+        } else {
+          this.annotationStart && this.getLine(line);
+        }
+      }
+    }
+  }
+
   getLine(line: string): void {
     if (handleTags.apiStart(line)) {
       this.blockBegin = true;
       this.cacheLine = [];
     } else if (handleTags.apiEnd(line)) {
-      this.parseBlock();
+      this.cacheLine && this.cacheLine.length > 0 && this.parseBlock();
       this.blockBegin = false;
       this.cacheLine = [];
     } else if (this.blockBegin) {

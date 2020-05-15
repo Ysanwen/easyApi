@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TryRequest = void 0;
 var TryRequest = (function () {
     function TryRequest(content) {
         this.name = 'TryRequest';
@@ -12,9 +13,6 @@ var TryRequest = (function () {
             this.tryRequest = true;
         }
     }
-    TryRequest.prototype.appendDescription = function (content) {
-        this.description += content;
-    };
     return TryRequest;
 }());
 exports.TryRequest = TryRequest;
