@@ -3,3 +3,4 @@ demo/
 api_doc/
 .vscode/
 easy.config.js
+.DS_Store
